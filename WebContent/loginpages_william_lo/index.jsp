@@ -7,9 +7,11 @@
 <title>Please log in</title>
 </head>
 <body>
+<p>
 <FORM METHOD=POST ACTION="login.jsp">
 Username:			<INPUT TYPE=TEXT NAME=username SIZE=20><BR>
 Password:			<INPUT TYPE=TEXT NAME=password SIZE=20><BR>
-<p><button type="button" onclick="registration.jsp">Sign up</button>  <INPUT TYPE=SUBMIT></FORM>
+<p><INPUT TYPE=SUBMIT VALUE="Submit">
+</FORM><A HREF=registration.jsp><INPUT TYPE=SUBMIT VALUE="Sign Up"></A>
 </body>
 </html>
