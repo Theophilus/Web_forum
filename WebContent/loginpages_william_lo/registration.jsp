@@ -18,8 +18,8 @@ First Name:			<INPUT TYPE=TEXT NAME=fname SIZE=20><BR>
 Last Name:			<INPUT TYPE=TEXT NAME=lname SIZE=20><BR>
 Company:			<INPUT TYPE=TEXT NAME=company SIZE=20><BR>
 Address:			<INPUT TYPE=TEXT NAME=address SIZE=30><BR>
-Telephone:			<INPUT TYPE=TEXT NAME=phone SIZE=12><BR>
-<p><INPUT TYPE=SUBMIT>
+Telephone:			<INPUT TYPE=TEXT NAME=phone SIZE=15><BR>
+<INPUT TYPE=SUBMIT>
 </FORM>
 
 </body>
