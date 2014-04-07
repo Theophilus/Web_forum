@@ -1,6 +1,6 @@
 package classes_william_lo;
 
-public class User2 {
+public class User {
 	String username;
 	String password;
 	String email;
