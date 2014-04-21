@@ -16,7 +16,7 @@
 			//	setup
 			String dbaddress = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/projtest";
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
+			Connection conn = DriverManager.getConnection(dbaddress, "csuser", "csc5cb45");
 			
 			boolean dataOK = true;
 			String title = request.getParameter("title");
@@ -35,7 +35,7 @@
 				
 				String titleCheck = "SELECT topic FROM thread WHERE topic = ?";
 				PreparedStatement pstmt = conn.prepareStatement(titleCheck);
-				ps.setString(1, topic);
+				pstmt.setString(1, topic);
 				ResultSet result = pstmt.executeQuery();
 				if(result.next() != false){
 			  		conn.close();
@@ -47,17 +47,19 @@
 			if(dataOK){
 				Statement stmt = conn.createStatement();
 				String countThreads = "SELECT COUNT(*) as count FROM thread";
-				result = stmt.executeQuery(countThreads);
+				ResultSet result = stmt.executeQuery(countThreads);
+				result.next();
 				int count = result.getInt("count") + 1;
 				
-				Date date = new Date();
-				String insert = "INSERT into Thread(thread_id, topic, author_id, num_of_posts, num_of_searches, date_created, search_words, num_of_views)";
-				insert += "VALUES(?, ?, ?, 0, 0, date, ?, 0)";
+				//Date date = new java.sql.Date();
+				String insert = "INSERT into thread(thread_id, topic, author_id, num_of_posts, num_of_searches, date_created, search_words, num_of_views)";
+				insert += "VALUES(?, ?, ?, 0, 0, ?, ?, 0)";
 				PreparedStatement pstmt = conn.prepareStatement(insert);
-				pstmt.setString(1, count);
+				pstmt.setString(1, count+"");
 				pstmt.setString(2, topic);
-				pstmt.setString(3, "needUser");
-				pstmt.setString(4, search);
+				pstmt.setInt(3, 0);
+				pstmt.setDate(4, new java.sql.Date(new java.util.Date().getTime()));
+				pstmt.setString(5, search);
 				
 				pstmt.executeUpdate();
 			}
