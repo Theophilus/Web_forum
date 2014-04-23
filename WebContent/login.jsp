@@ -7,6 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" src="Scripts/script.js"></script>
 <title>Insert title here</title>
 </head>
 <body>
@@ -27,13 +28,13 @@
 		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
 			  	//Close the connection.
 				    conn.close();
-			  		response.sendRedirect("User/userpage.jsp");  
+			  		response.sendRedirect("index.html");  
 			  	}
 	    	//Create a SQL statement
 		    Statement stmt = conn.createStatement();
 	    	
 	    	//check if usernsme or email exists
-		    String userCheck= "SELECT username, password FROM account WHERE username = ? AND password  = ?";
+		    String userCheck= "SELECT * FROM account WHERE username = ? AND password  = ?";
 		    PreparedStatement ps = conn.prepareStatement(userCheck);
 		    ps.setString(1,username);
 		    ps.setString(2,passwd);
@@ -42,13 +43,30 @@
 		   
 		  	if( result.next() != false){
 		  	//Close the connection.
-			    conn.close();
-		  		response.sendRedirect("User/userpage.jsp");  
+			    
+		  		String userType=result.getString("accountType");
+		  		if(userType.equalsIgnoreCase("admin")){
+		  			conn.close();
+		  			response.sendRedirect("Admin/adminHome.jsp");  
+		  		}
+		  		if(userType.equalsIgnoreCase("user")){
+		  			conn.close();
+		  			response.sendRedirect("User/userHome.jsp");  
+		  		}
+		  		if(userType.equalsIgnoreCase("customer")){
+		  			conn.close();
+		  			response.sendRedirect("Customer/customerHome.jsp");  
+		  		}
+		  		if(userType.equalsIgnoreCase("moderator")){
+		  			conn.close();
+		  			response.sendRedirect("Mederator/moderatorHome.jsp");  
+		  		}
+		  		
 		  	}
 		  	else{
 		  		
 		  	//Close the connection.
-			    conn.close();
+			    conn.close(); 
 		  		response.sendRedirect("index.html");
 		  	}
 	    	
