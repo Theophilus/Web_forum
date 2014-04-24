@@ -39,15 +39,10 @@
 		    
 		    
 		  	if(result.next() != false){
-		  		conn.close();%>
-		  		<script type="text/javascript">
-		  		/*function wrongImput(){
-					alert("User name already exist");
-				}
-		  		wrongImput();*/
-		  		window.alert("test")
-		  		</script>
-		  		<% response.sendRedirect("createUsr.html");
+		  		conn.close(); %>
+		  		
+		  		
+		  		<% response.sendRedirect("../Registration/user.html");
 		  		return;
 		  	}
 	    	
@@ -82,7 +77,7 @@
 			
 			//Close the connection.
 		    conn.close();
-		    response.sendRedirect("createUsr.html");
+		    response.sendRedirect("createAdmin.html");
 		} catch (Exception e){
 			out.println("Exception: " + e);
 		}

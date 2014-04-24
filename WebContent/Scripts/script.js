@@ -11,11 +11,12 @@ function wrongImput(){
 	alert("User name does not exist");
 }
 
-$("#adminMenu").load( function changeTo(pagename){
+function changeTo(pagename){
 	var x = document.getElementById("adminContent");
+	
 	if(pagename == "admin"){
 		
-		x.innerHTML = "adminReg.html";
+		x.innerHTML = adminReg.html;
 	}
 	if(pagename ==""){
 		
@@ -27,4 +28,4 @@ $("#adminMenu").load( function changeTo(pagename){
 	
 	}
 	
-});
+}
