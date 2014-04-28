@@ -24,6 +24,7 @@
 		  	//Get parameters from the user registration page
 		    String username = request.getParameter("username");
 		    String passwd = request.getParameter("password");
+		    
 		    //check for null values
 		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
 			  	//Close the connection.
@@ -43,7 +44,7 @@
 		   
 		  	if( result.next() != false){
 		  	//Close the connection.
-			    
+			    session.setAttribute( "username", username );
 		  		String userType=result.getString("accountType");
 		  		if(userType.equalsIgnoreCase("admin")){
 		  			conn.close();

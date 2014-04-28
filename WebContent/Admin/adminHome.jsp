@@ -38,6 +38,7 @@
 	
 		<br><br><br>
 	<p> Admin Login successful !!</p>
+	<% out.println("The user of this page is: "+session.getAttribute("username")); %>
 	</div>
 	<div id="footer">
 		<p> &#169; webhackers</p>

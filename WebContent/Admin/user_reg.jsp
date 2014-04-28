@@ -48,6 +48,7 @@
 		  		window.alert("test")
 		  		</script>
 		  		<% response.sendRedirect("createUsr.html");
+		  		//response.sendRedirect("window.alert("test"))");
 		  		return;
 		  	}
 	    	
