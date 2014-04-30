@@ -22,6 +22,7 @@
 			String title = request.getParameter("title");
 			String topic = request.getParameter("topic");
 			String search = request.getParameter("search");
+			int userID  = -1;
 			
 			//	make sure a title and topic are entered
 			if(title.equals("") || topic.equals("")){
@@ -43,6 +44,21 @@
 			  		return;
 			  	}
 			}
+			
+			if(dataOK){
+				String getID = "SELECT account_id as id FROM account WHERE username = ?";
+				PreparedStatement pstmt = conn.prepareStatement(getID);
+				String login = (String)session.getAttribute("username");
+				pstmt.setString(1, login);
+				ResultSet result = pstmt.executeQuery();
+				result.next();
+				userID = result.getInt("id");
+				if(userID == -1 || userID == 0){
+					conn.close();
+					dataOK = false;
+					return;
+				}
+			}
 			//	if everything checks out, insert the data
 			if(dataOK){
 				Statement stmt = conn.createStatement();
@@ -57,7 +73,7 @@
 				PreparedStatement pstmt = conn.prepareStatement(insert);
 				pstmt.setString(1, count+"");
 				pstmt.setString(2, topic);
-				pstmt.setInt(3, 0);
+				pstmt.setInt(3, userID);
 				pstmt.setDate(4, new java.sql.Date(new java.util.Date().getTime()));
 				pstmt.setString(5, search);
 				
