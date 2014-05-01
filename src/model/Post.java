@@ -13,6 +13,7 @@ public class Post {
 	
 	private String searchWords;
 	private String content;
+	private String topic;
 	
 	private Date creationDate;
 	private Time creationTime;
@@ -21,7 +22,7 @@ public class Post {
 	
 	public Post(int authorID, int postID, int threadID, int upvotes,
 			int downvotes, int commentCount, String searchWords,
-			String content, Date creationDate, Date deletionDate) {
+			String content, String topic, Date creationDate) {
 		this.authorID = authorID;
 		this.postID = postID;
 		this.threadID = threadID;
@@ -30,8 +31,8 @@ public class Post {
 		this.commentCount = commentCount;
 		this.searchWords = searchWords;
 		this.content = content;
+		this.topic = topic;
 		this.creationDate = creationDate;
-		this.deletionDate = deletionDate;
 	}
 
 	public Time getCreationTime() {
@@ -81,6 +82,10 @@ public class Post {
 	public String getContent() {
 		return content;
 	}
+	
+	public String getTopic() {
+		return topic;
+	}
 
 	public Date getCreationDate() {
 		return creationDate;
@@ -108,6 +113,10 @@ public class Post {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+	
+	public void setTopic(String topic) {
+		this.topic = topic;
 	}
 
 	public void setCreationDate(Date creationDate) {
