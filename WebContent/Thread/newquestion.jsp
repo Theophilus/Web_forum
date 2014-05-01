@@ -71,13 +71,14 @@
 				String insert = "INSERT into thread(thread_id, topic, author_id, num_of_posts, num_of_searches, date_created, search_words, num_of_views)";
 				insert += "VALUES(?, ?, ?, 0, 0, ?, ?, 0)";
 				PreparedStatement pstmt = conn.prepareStatement(insert);
-				pstmt.setString(1, count+"");
+				pstmt.setString(1, count + "");
 				pstmt.setString(2, topic);
 				pstmt.setInt(3, userID);
 				pstmt.setDate(4, new java.sql.Date(new java.util.Date().getTime()));
 				pstmt.setString(5, search);
 				
 				pstmt.executeUpdate();
+				session.setAttribute("threadID", count);
 			}
 			
 			conn.close();	
