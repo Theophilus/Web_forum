@@ -1,9 +1,10 @@
 package connect;
 
 import java.sql.*;
-import java.sql.DriverManager;
+import java.util.Collections;
 import java.util.LinkedList;
 
+import model.Comment;
 import model.Post;
 import model.Thread;
 
@@ -28,6 +29,12 @@ public class ThreadController {
 			
 			thread = new Thread(threadID, topic, authorID, postCount, threadDate, threadTime);
 			
+			Post question = getQuestion(threadID);
+			thread.setQuestion(question);
+			
+			LinkedList<Comment> comments = getComments(question.getPostID());
+			thread.setComments(comments);
+			
 			conn.close();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -35,40 +42,71 @@ public class ThreadController {
 		return thread;
 	}
 	
-	public static LinkedList<Post> getPosts(int threadID){
-		LinkedList<Post> posts = null;
+	public static LinkedList<Comment> getComments(int postID){
+		LinkedList<Comment> comments = null;
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
 			
-			String selectPosts = "SELECT * FROM post WHERE tid = ? ORDER BY num_of_likes DESC";
-			PreparedStatement pstmt = conn.prepareStatement(selectPosts);
-			pstmt.setInt(1, threadID);
+			String selectComments = "SELECT * FROM comment WHERE pid = ?";
+			PreparedStatement pstmt = conn.prepareStatement(selectComments);
+			pstmt.setInt(1, postID);
 			
 			ResultSet results = pstmt.executeQuery();
 			
-			posts = new LinkedList<Post>();
+			comments = new LinkedList<Comment>();
 			while(results.next()){
-				int post_id = results.getInt("post_id");
+				int comment_id = results.getInt("comment_id");
 				int author_id = results.getInt("author_id");
-				int tid = results.getInt("tid");
+				int pid = results.getInt("pid");
 				Date date_created = results.getDate("date_created");
 				String topic = results.getString("topic");
 				String content = results.getString("content");
-				String search_words = results.getString("search_words");
-				int num_of_likes = results.getInt("num_of_likes");
-				int num_of_dislikes = results.getInt("num_of_dislikes");
-				int num_of_comments = results.getInt("num_of_comments");
+				int num_of_upvote = results.getInt("num_of_upvote");
+				int num_of_downvote = results.getInt("num_of_downvote");
 				
-				Post currentPost = new Post(author_id, post_id, tid, num_of_likes,
-						num_of_dislikes, num_of_comments, search_words, content, topic, date_created);
-				posts.add(currentPost);
+				Comment currentComment = new Comment(comment_id, author_id, pid, date_created, topic, content, num_of_upvote, num_of_downvote);
+				comments.add(currentComment);
 			}
+			
+			Collections.sort(comments, Comment.BY_SCORE);
 			
 			conn.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return posts;
+		return comments;
+	}
+	
+	public static Post getQuestion(int threadID){
+		Post post = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+			
+			String getQuestion = "SELECT * FROM post WHERE tid = ?";
+			PreparedStatement pstmt = conn.prepareStatement(getQuestion);
+			pstmt.setInt(1,  threadID);
+			ResultSet results = pstmt.executeQuery();
+			results.next();
+			
+			int authorID = results.getInt("author_id");
+			int postID = results.getInt("post_id");
+			int upvotes = results.getInt("num_of_likes");
+			int downvotes = results.getInt("num_of_dislikes");
+			int commentCount = results.getInt("num_of_comments");
+			String searchWords = results.getString("search_words");
+			String content = results.getString("content");
+			String topic = results.getString("topic");
+			Date creationDate = results.getDate("date_created");
+			
+			post = new Post(authorID, postID, threadID, upvotes, downvotes, commentCount, searchWords, content, topic, creationDate);
+			
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return post;
 	}
 }

@@ -16,7 +16,7 @@ public class Post {
 	private String topic;
 	
 	private Date creationDate;
-	private Time creationTime;
+	private Time editTime;
 	private Date deletionDate;
 	private Time deletionTime;
 	
@@ -35,16 +35,16 @@ public class Post {
 		this.creationDate = creationDate;
 	}
 
-	public Time getCreationTime() {
-		return creationTime;
+	public Time getEditTime() {
+		return editTime;
 	}
 
 	public Time getDeletionTime() {
 		return deletionTime;
 	}
 
-	public void setCreationTime(Time creationTime) {
-		this.creationTime = creationTime;
+	public void setEditTime(Time creationTime) {
+		this.editTime = creationTime;
 	}
 
 	public void setDeletionTime(Time deletionTime) {
