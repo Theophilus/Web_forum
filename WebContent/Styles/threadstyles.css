@@ -1,0 +1,75 @@
+@CHARSET "UTF-8";
+
+/*	New questions */
+.questionLabel{
+	width:20%;
+	float:left;
+}
+
+#qlabel{
+	margin-top:3px;
+}
+
+.questionForm{
+	width:40%;
+	float:left;
+}
+
+/*	Threads */
+.threadTopic{
+	width:100%;
+	border:1px solid;
+}
+
+h1.topicLabel{
+	margin-left:15px;
+}
+
+.question{
+	position:relative;
+	min-height:175px;
+	width:inherit;
+	border:1px solid;
+	float:left;
+}
+
+#askerInfo{
+	float:left; 
+	width:20%; 
+	height:inherit;
+}
+
+h4.askerName{
+	text-align:center;
+}
+
+.userIcon{
+	 position:relative;
+	 left:50%;
+	 top:50%;
+	 margin-left:-25px;
+	 margin-top:-25px;
+}
+
+#questionBody{
+	width:78%;
+	height:inherit;
+	padding-left:1%;
+}
+
+.comment{
+	position:relative;
+	float:left;
+	border:1px solid;
+	margin-left:5%;
+	width:94%;
+}
+
+.threadEditing{
+	position:absolute;
+	float:right;
+	bottom:0;
+	right:0;
+}
+
+
