@@ -56,6 +56,7 @@
 				if(userID == -1 || userID == 0){
 					conn.close();
 					dataOK = false;
+					response.sendRedirect("../Thread/newquestion.html");
 					return;
 				}
 			}
@@ -80,8 +81,8 @@
 				pstmt.executeUpdate();
 				session.setAttribute("threadID", count);
 			}
-			
-			conn.close();	
+			conn.close();
+			response.sendRedirect("../Thread/thread.jsp");
 		}
 		catch(Exception e){
 			out.println("Exception: "+e);
