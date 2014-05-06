@@ -50,4 +50,30 @@ public class DataController {
 		}
 		return username;
 	}
+	
+	public static boolean isModerator(int userID){
+		boolean result = false;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+			
+			String queryMod = "SELECT moderator_id FROM moderatorAccount WHERE moderator_id = ?";
+			PreparedStatement pstmt = conn.prepareStatement(queryMod);
+			pstmt.setInt(1, userID);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()){
+				result = true;
+			}
+			else{
+				result = false;
+			}
+			
+			conn.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

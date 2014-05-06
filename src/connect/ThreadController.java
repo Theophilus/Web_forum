@@ -6,10 +6,20 @@ import java.util.LinkedList;
 
 import model.Comment;
 import model.Post;
-import model.Thread;
 
 public class ThreadController {
+	Connection conn;
 	
+	private static int tempThreadID = 1;
+	
+	public ThreadController(){
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	public static LinkedList<Comment> getComments(int postID){
 		LinkedList<Comment> comments = null;
 		try{
@@ -70,6 +80,9 @@ public class ThreadController {
 			
 			post = new Post(authorID, postID, threadID, upvotes, downvotes, commentCount, searchWords, content, topic, creationDate);
 			
+			LinkedList<Comment> comments = getComments(postID);
+			post.setComments(comments);
+			
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,13 +92,13 @@ public class ThreadController {
 	}
 	
 	public static int postQuestion(Post post, int userID){
-		int threadID = -1;
+		int postID = -1;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
 			
 			PreparedStatement pstmt;
-			ResultSet rs;
+			//ResultSet rs;
 			
 			/*	misunderstanding
 			//	insert the thread
@@ -112,17 +125,115 @@ public class ThreadController {
 					+ "VALUES (?, ?, CURDATE(), ?, ?, ?, 0, 0, 0)";
 			pstmt = conn.prepareStatement(insertPost);
 			pstmt.setInt(1, userID);
-			pstmt.setInt(2, 1);
+			pstmt.setInt(2, tempThreadID);	//	THIS IS THE THREAD ID FOR USER POSTS?	CHANGE BELOW TOO IF NEEDED
 			pstmt.setString(3, post.getTopic());
 			pstmt.setString(4, post.getContent());
 			pstmt.setString(5, post.getSearchWords());
 			
 			pstmt.executeUpdate();
 			
+			String getPID = "SELECT LAST_INSERT_ID()";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(getPID);
+			rs.next();
+			
+			postID = rs.getInt(1);
+			
+			String updatePostCount = "UPDATE thread SET num_of_posts = num_of_posts+1 WHERE thread_id = ?";
+			pstmt = conn.prepareStatement(updatePostCount);
+			pstmt.setInt(1, tempThreadID);
+			pstmt.executeUpdate();
+			
+			
 			conn.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return threadID;
+		return postID;
+	}
+	
+	public boolean editPost(Post oldPost, Post newPost) throws SQLException{
+		boolean result = false;
+		try{
+			conn.setAutoCommit(false);
+			
+			String insertEdit = "INSERT INTO editedPost (pid, editor_id, oldcontent, editdate, edittime) VALUES (?, ?, ?, CURDATE(), CURTIME())";
+			PreparedStatement pstmt = conn.prepareStatement(insertEdit);
+			pstmt.setInt(1, oldPost.getPostID());
+			pstmt.setInt(2, newPost.getAuthorID());
+			pstmt.setString(3, oldPost.getContent());
+			
+			pstmt.executeUpdate();
+			
+			String editOld = "UPDATE post SET topic = ?, search_words = ?, content = ? WHERE post_id = ?";
+			pstmt = conn.prepareStatement(editOld);
+			pstmt.setString(1, newPost.getTopic());
+			pstmt.setString(2, newPost.getSearchWords());
+			pstmt.setString(3, newPost.getContent());
+			pstmt.setInt(4, oldPost.getPostID());
+			
+			pstmt.executeUpdate();
+			
+			conn.commit();
+			result = true;
+		}catch(SQLException e){
+			if(conn != null){
+				System.err.println("Rolling back transaction.");
+				conn.rollback();
+			}
+		}finally{
+			conn.setAutoCommit(true);
+			conn.close();
+		}
+		return result;
+	}
+	
+	public boolean deletePost(Post post, int editorID) throws SQLException{
+		boolean result = false;
+		try{
+			conn.setAutoCommit(false);
+			
+			String insertEdit = "INSERT INTO deletedPost (pid, author_id, tid, date_created, topic, content, search_words, num_of_likes, num_of_dislikes, num_of_comments, editor_id, editdate, edittime)"
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), CURTIME())";
+			PreparedStatement pstmt = conn.prepareStatement(insertEdit);
+			pstmt.setInt(1, post.getPostID());
+			pstmt.setInt(2, post.getAuthorID());
+			pstmt.setInt(3, post.getThreadID());
+			pstmt.setDate(4, post.getCreationDate());
+			pstmt.setString(5, post.getContent());
+			pstmt.setString(6, post.getTopic());
+			pstmt.setString(7, post.getSearchWords());
+			pstmt.setInt(8, post.getUpvotes());
+			pstmt.setInt(9, post.getDownvotes());
+			pstmt.setInt(10, post.getCommentCount());
+			pstmt.setInt(11, editorID);
+			
+			pstmt.executeUpdate();
+			
+			String deleteOld = "DELETE FROM post WHERE post_id = ?";
+			pstmt = conn.prepareStatement(deleteOld);
+			pstmt.setInt(1, post.getPostID());
+			
+			pstmt.executeUpdate();
+			
+			String updatePostCount = "UPDATE thread SET num_of_posts = num_of_posts-1 WHERE thread_id = ?";
+			pstmt = conn.prepareStatement(updatePostCount);
+			pstmt.setInt(1, tempThreadID);
+			
+			pstmt.executeUpdate();
+			
+			
+			conn.commit();
+			result = true;
+		}catch(SQLException e){
+			if(conn != null){
+				System.err.println("Rolling back transaction.");
+				conn.rollback();
+			}
+		}finally{
+			conn.setAutoCommit(true);
+			conn.close();
+		}
+		return result;
 	}
 }

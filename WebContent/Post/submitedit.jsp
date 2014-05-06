@@ -10,28 +10,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Submit new question data</title>
+<title>Editing post</title>
 </head>
 <body>
 	<%
-		session.setAttribute("username", "lowill");
 		String username = (String)session.getAttribute("username");
 		String topic = request.getParameter("topic");
 		String search = request.getParameter("searchwords");
 		String content = request.getParameter("content");
+		int editorID = DataController.getUserID(username);
+		int oldPostID = Integer.parseInt(request.getParameter("postid"));
 		
-		int userID = DataController.getUserID(username);
+		Post newPost = Post.newPost(editorID, topic, search, content);
+		Post oldPost = ThreadController.getQuestion(oldPostID);
 		
-		Post post = Post.newPost(userID, topic, search, content);
-		int newPostID = ThreadController.postQuestion(post, userID);
+		new ThreadController().editPost(oldPost, newPost);
 		
-		if(newPostID == -1){
-			response.sendRedirect("../Post/newquestion.html");
-		}
-		else{
-			response.sendRedirect("../Post/post.jsp?postid="+ newPostID);
-		}
-		
+		response.sendRedirect("../Post/post.jsp?postid="+oldPostID);
 	%>
 </body>
 </html>

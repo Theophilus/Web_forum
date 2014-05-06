@@ -8,7 +8,8 @@
 <%@ page import="model.*" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%	Post currentPost = ThreadController.getQuestion((Integer)session.getAttribute("postID"));
+<%
+	Post currentPost = ThreadController.getQuestion(Integer.parseInt(request.getParameter("postid")));
 	int userID = DataController.getUserID((String)session.getAttribute("username"));
 %>
 <html>
@@ -39,22 +40,23 @@
 	</div>
 	
 	<div id="userContent">
-	<div class="threadBody"><br>
-		<div class="threadTopic"><h1 class="topicLabel"><%= currentPost.getTopic() %></h1></div>
-		<div class="question" id="askerInfo">
+		<div class="threadBody"><br>
+			<div class="threadTopic"><h1 class="topicLabel"><%= currentPost.getTopic() %></h1></div>
+			<div class="question" id="askerInfo">
 				<h4 class="askerName"><%= session.getAttribute("username") %></h4>
 				<br>
 				<div class="userIcon">
 					<img src="../images/kappa.png" width="50" height="50">
 				</div>
-				<div class="question" id="questionBody"><%= currentPost.getContent() %>
-					<%
-						if(userID == currentPost.getAuthorID()){
-							out.print("\n<div class=\"threadEditing\"><a href=\"editthread.jsp\">Edit</a>   <a href=\"deletethread.jsp\">Delete</a></div>");
-						}
-					%>
-				</div>
+			</div>
+			<div class="question" id="questionBody"><%= currentPost.getContent() %>
 				<%
+						if(userID == currentPost.getAuthorID() || DataController.isModerator(userID)){
+ 							out.print("\n<div class=\"threadEditing\"><a href=\"editpost.jsp?postid="+currentPost.getPostID()+"\">Edit</a>   <a href=\"deletepost.jsp?postid="+currentPost.getPostID()+"\">Delete</a></div>");
+ 						}
+ 				%>
+			</div>	
+			<%
 					ListIterator<Comment> iterator = currentPost.getComments().listIterator();
 					Comment currentComment;
 					String commenterUsername = null;
@@ -68,14 +70,14 @@
 						commentTopic = currentComment.getTopic();
 						commentBody = currentComment.getContent();
 						commentText = "<div class=\"comment\"><b>"+commenterUsername+"</b> ["+commentTopic+"]: "+commentBody+"</div>";
-						if(userID == currentComment.getAuthorID()){
-							commentText += "\n<div class=\"threadEditing\"><a href=\"editcomment.jsp\">Edit</a>   <a href=\"deletecomment.jsp\">Delete</a></div>";
+						if(userID == currentComment.getAuthorID() || DataController.isModerator(userID)){
+							commentText += "\n<div class=\"threadEditing\"><a href=\"editcomment.jsp?commentid="+currentComment.getCommentID()+"\">Edit</a>   <a href=\"deletecomment.jsp?commentid="+currentComment.getCommentID()+"\">Delete</a></div>";
 						}
 						out.print(commentText);
 					}
-				%>
-			</div>	
-	</div>
+			%>
+			<a href="../Post/newcomment.jsp?postid=<%= currentPost.getPostID() %>"><button type="button">New Comment</button></a>
+		</div>
 	</div>
 	<div id="userAdvert">
 

@@ -43,7 +43,6 @@
 				this is the question body
 				<div class="threadEditing">
 					<a href="editthread.jsp">Edit</a><a href="deletethread.jsp">Delete</a>
-					
 				</div>
 			</div>
 			
@@ -53,6 +52,7 @@
 			<div class="comment">
 				<b>commenter's name</b> [comment's topic]: this is a longer comment that will hopefully wrap around to the next line!  perhaps we can get it to wrap again just for testing purposes!!!!   satdtgwsgywhr<div class="threadEditing"><a href="editcomment.jsp">Edit</a>   <a href="deletecomment.jsp">Delete</a></div>
 			</div>
+			<a href="../Post/newcomment.jsp?postid=5"><button type="button">New Comment</button></a>
 		</div>
 	</div>
 	<div id="userAdvert">
