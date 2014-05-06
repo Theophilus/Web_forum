@@ -44,22 +44,17 @@
 		    String username = (String)session.getAttribute("username");
 		    
 	    	//check if usernsme or email exists
-		    String getPosts= "SELECT * FROM message WHERE sender_id =?";
+		    String getPosts= "SELECT ad_id, link_url,content FROM advertisement GROUP BY ad_id DESC";
 		    PreparedStatement ps = conn.prepareStatement(getPosts);
-		    int id = (Integer)session.getAttribute("uid");
-		    ps.setInt(1,id);
+		    
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
 		   
 		  	if( result.next() != false){
 				do{
 					out.print("<br>");
-					out.print("<p> Sender :"+ result.getInt("sender_id") + "</p>");
-					out.print("<p> Date : "+ result.getDate("date_sent") + "</p>");
-					out.print("<p> Time : "+ result.getTime("time_set") + "</p>");
-					out.print("<p> Subject : "+ result.getString("subject") + "</p>");
-					out.print("<p> Content : "+ result.getString("content")+ "</p>");
-					
+					out.print("<p>" +result.getString("content")  +"</p>");
+					out.print("<a href="+ result.getString("link_url") + "\""+">" +"Click here to learn more</a>");
 		  		}while( result.next() != false);
 		  		
 		  	}
@@ -67,7 +62,7 @@
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  		out.print("Your imbox is empty!!!");
+		  		out.print("<br><br>There are currently no ads to display!");
 		  	}
 	    	
 			//Close the connection.
