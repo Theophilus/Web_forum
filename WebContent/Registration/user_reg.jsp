@@ -15,7 +15,7 @@
 	<%
 		try {
 			//Create a connection string
-			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/projtest";
+			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 		    Class.forName("com.mysql.jdbc.Driver");
 	    
@@ -27,21 +27,26 @@
 		    String passwd = request.getParameter("password");
 		    String email = request.getParameter("email");
 		    
-	    	//Create a SQL statement
+		  //Create a SQL statement
 		    Statement stmt = conn.createStatement();
-	    	
+		  
+		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
+			  	//Close the connection.
+				    conn.close();
+			  		response.sendRedirect("customer.html");  
+			  	}
+		    
 	    	//check if usernsme or email exists
 		    String userCheck= "SELECT username FROM account WHERE username = ?";
 		    PreparedStatement ps = conn.prepareStatement(userCheck);
 		    ps.setString(1,username);
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
-		    
-		    
 		  	if(result.next() != false){
+		  		session.setAttribute("username", username);
 		  		conn.close();
-		  		response.sendRedirect("../Registration/user.html");
-		  		return;
+		  		response.sendRedirect("userRegError.jsp");
+		  		 return;
 		  	}
 	    	
 	    	//Populate SQL statement with for count of users.
@@ -58,8 +63,8 @@
 		    userCount = userCount +1;
 		    
 		    //Make an insert statement for the Sells table:
-		    String insert = "INSERT INTO account(account_id, username, email, password,accountType)" +
-	                  "VALUES (?, ?, ?, ?,?)";
+		    String insert = "INSERT INTO account(account_id, username, email, password,Atype,Adate,Atime)" +
+	                  "VALUES (?, ?, ?, ?,?,CURDATE(),CURTIME())";
 		    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
 			ps = conn.prepareStatement(insert);
 			
@@ -72,7 +77,14 @@
 			
 			//Run the query against the DB
 			ps.executeUpdate();
-			
+			insert = "INSERT INTO userAccount(user_id, rating, num_of_post, num_of_comments)" +
+	                  "VALUES (?, ?, ?, ?)";
+			ps = conn.prepareStatement(insert);
+			ps.setInt(1, userCount);
+		    ps.setInt(2, 0);
+			ps.setInt(3, 0);
+			ps.setInt(4, 0);
+			ps.executeUpdate();
 			//Close the connection.
 		    conn.close();
 		    response.sendRedirect("../index.html");

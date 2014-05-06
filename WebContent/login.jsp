@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    
 <%@ page import="java.io.*,java.util.*,java.sql.*"%> 
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -14,7 +13,7 @@
 <% 
 	try {
 			//Create a connection string
-			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/projtest";
+			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 		    Class.forName("com.mysql.jdbc.Driver");
 	    
@@ -45,7 +44,8 @@
 		  	if( result.next() != false){
 		  	//Close the connection.
 			    session.setAttribute( "username", username );
-		  		String userType=result.getString("accountType");
+			    session.setAttribute( "uid", result.getInt("account_id"));
+		  		String userType=result.getString("Atype");
 		  		if(userType.equalsIgnoreCase("admin")){
 		  			conn.close();
 		  			response.sendRedirect("Admin/adminHome.jsp");  

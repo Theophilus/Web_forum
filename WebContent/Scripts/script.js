@@ -7,8 +7,24 @@ function emailExits(email){
 	alert("email "+email+ " already exits in system.");
 }
 
-function wrongImput(){
-	alert("User name does not exist");
+function regError(error){
+window.print("in error");
+	if(error == "userExists"){
+		alert("username "+user+ " already exits in system.");
+		
+	}
+	return;
+	
+}
+
+function regError(){
+	window.print("in error");
+		//if(error == "userExists"){
+			alert("username "+user+ " already exits in system.");
+			
+		//}
+		//return;
+		
 }
 
 function changeTo(pagename){

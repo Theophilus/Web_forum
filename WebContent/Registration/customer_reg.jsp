@@ -28,7 +28,11 @@
 		    
 	    	//Create a SQL statement
 		    Statement stmt = conn.createStatement();
-	    	
+		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
+			  	//Close the connection.
+				    conn.close();
+			  		response.sendRedirect("index.html");  
+			  	}
 	    	//check if usernsme or email exists
 		    String userCheck= "SELECT username FROM account WHERE username = ?";
 		    PreparedStatement ps = conn.prepareStatement(userCheck);
@@ -39,6 +43,7 @@
 		    
 		  	if(result.next() != false){
 		  		conn.close();
+		  		session.setAttribute("username", username);
 		  		response.sendRedirect("../Registration/user.html");
 		  		return;
 		  	}

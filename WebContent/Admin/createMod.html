@@ -7,7 +7,30 @@
 		<title>Moderator Registration</title>
 	</head>
 	<body>
-		<div id="container" >
+	
+	<div id="header">
+		
+		<img class="head_img" src="../images/logo.png"/> 
+		<a href="../"><button class="logout" type="button">logout</button></a> 
+		
+	</div>
+	<div id="adminMenu">
+		<ul>
+		<li><a href="adminHome.jsp">Home</a></li>
+		<li><a href="adminProfile.jsp">Profile</a></li>
+		<li><a href="adminMessages.jsp">Messages</a></li>
+		<li><a href="adminForum.jsp">Forum</a></li>
+		<li><a href="adminSearch.jsp">Search</a></li>
+		<li><a href="createAdmin.html">Create Admin</a></li>
+		<li><a href="createMod.html">Create Moderator</a></li>
+		<li><a href="createCust.html">Create Customer</a></li>
+		<li><a href="createUsr.html">Create User</a></li>
+		<li><a href="sales.jsp">Sales</a></li>
+		
+		</ul>
+		
+	</div>
+		<div id="adminContent" >
 		<br><br><br><br>
 		<FORM METHOD=POST ACTION="user_reg.jsp">
 		<table align="center">
@@ -25,7 +48,7 @@
 		</tr>
 		</table>
 		<br><br>
-		<a href="../index.html"><button type="button">Cancel</button></a> <INPUT value="SignUp" TYPE=SUBMIT>
+		<a href="adminHome.jsp"><button type="button">Cancel</button></a> <INPUT value="Create" TYPE=SUBMIT>
 		</FORM>
 		</div>
 	</body>

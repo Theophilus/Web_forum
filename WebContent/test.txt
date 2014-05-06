@@ -1,0 +1,1 @@
+//<script>regError(<%session.getAttribute("error");%>,<%session.getAttribute("username");%>);</script>

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ page import="java.io.*,java.util.*,java.sql.*"%> 
+     <%@ page import="java.io.*,java.util.*,java.sql.*"%> 
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -30,14 +30,13 @@
 	</div>
 	
 	<div id="userContent">
-		<div id="announcement">
-		<h4>Announcements</h4>
-		<p>New to this site! <a href="userGuide.html">Click here </a> to learn how to navigate through the site</p>
+		<div id = "new">
+		<br><br>
+			<button>Create Message</button>
 		</div>
-		
-		<div id="hotTopics">
-		<h4>Hot Posts</h4>
-		<% 
+		<div id ="recieved">
+		<h4>Inbox</h4>
+			<% 
 	try {
 			//Create a connection string
 			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
@@ -50,15 +49,22 @@
 		    String username = (String)session.getAttribute("username");
 		    
 	    	//check if usernsme or email exists
-		    String getPosts= "SELECT content, num_of_comments FROM post GROUP BY num_of_comments DESC LIMIT 0,9;";
+		    String getPosts= "SELECT * FROM message WHERE sender_id =?";
 		    PreparedStatement ps = conn.prepareStatement(getPosts);
-		   
+		    int id = (Integer)session.getAttribute("uid");
+		    ps.setInt(1,id);
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
 		   
 		  	if( result.next() != false){
 				do{
-		  			
+					out.print("<br>");
+					out.print("<p> Sender :"+ result.getInt("sender_id") + "</p>");
+					out.print("<p> Date : "+ result.getDate("date_sent") + "</p>");
+					out.print("<p> Time : "+ result.getTime("time_set") + "</p>");
+					out.print("<p> Subject : "+ result.getString("subject") + "</p>");
+					out.print("<p> Content : "+ result.getString("content")+ "</p>");
+					
 		  		}while( result.next() != false);
 		  		
 		  	}
@@ -66,7 +72,7 @@
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  		out.print("There are no post in the system.");
+		  		out.print("Your imbox is empty!!!");
 		  	}
 	    	
 			//Close the connection.
@@ -77,17 +83,10 @@
 		}
 	%>
 		</div>
-		
-		<div id="activeUsers">
-		<h4>Active Users</h4>
-	
-		
-		</div>
-		
-		<div id="newUsers">
-		<h4>New Users</h4>
+		<div id ="recieved">
+		<h4>Outbox</h4>
 		<% 
-		try {
+	try {
 			//Create a connection string
 			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
@@ -97,22 +96,24 @@
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
 	
 		    String username = (String)session.getAttribute("username");
+		    int id = (Integer)session.getAttribute("uid");
 		    
-	    	//Create a SQL statement
-		    Statement stmt = conn.createStatement();
-	    	
 	    	//check if usernsme or email exists
-		    String getPosts= "SELECT account_id,username FROM account  WHERE NOT(username = ?) AND Atype=?  GROUP BY account_id DESC LIMIT 0,9";
+		    String getPosts= "SELECT * FROM message WHERE receiver_id =?";
 		    PreparedStatement ps = conn.prepareStatement(getPosts);
-		    ps.setString(1,username);
-		    ps.setString(2,"user");
+		    ps.setInt(1,id);
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
 		   
 		  	if( result.next() != false){
-		  		do{
-		  			out.print("<p>"+ result.getString("username") + "</p>");
-		  			
+				do{
+					
+					out.print("<br>");
+					out.print("<p> Sender :"+ result.getInt("sender_id") + "</p>");
+					out.print("<p> Date : "+ result.getDate("date_sent") + "</p>");
+					out.print("<p> Time : "+ result.getTime("time_set") + "</p>");
+					out.print("<p> Subject : "+ result.getString("subject") + "</p>");
+					out.print("<p> Content : "+ result.getString("content")+ "</p>");
 		  		}while( result.next() != false);
 		  		
 		  	}
@@ -120,7 +121,7 @@
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  		out.print("There are no new users in the system.");
+		  		out.print("Your outbox is empty !!!");
 		  	}
 	    	
 			//Close the connection.
@@ -130,7 +131,6 @@
 			out.println("Exception: " + e);
 		}
 	%>
-		
 		</div>
 	</div>
 	<div id="userAdvert">

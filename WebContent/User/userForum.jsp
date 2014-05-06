@@ -30,14 +30,8 @@
 	</div>
 	
 	<div id="userContent">
-		<div id="announcement">
-		<h4>Announcements</h4>
-		<p>New to this site! <a href="userGuide.html">Click here </a> to learn how to navigate through the site</p>
-		</div>
 		
-		<div id="hotTopics">
-		<h4>Hot Posts</h4>
-		<% 
+			<% /*
 	try {
 			//Create a connection string
 			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
@@ -50,15 +44,20 @@
 		    String username = (String)session.getAttribute("username");
 		    
 	    	//check if usernsme or email exists
-		    String getPosts= "SELECT content, num_of_comments FROM post GROUP BY num_of_comments DESC LIMIT 0,9;";
+		    String getPosts= "SELECT * FROM post WHERE GROUP BY num_of_likes LIMIT 0,20";
 		    PreparedStatement ps = conn.prepareStatement(getPosts);
-		   
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
 		   
 		  	if( result.next() != false){
 				do{
-		  			
+					out.print("<br>");
+					out.print("<p> Post :<br>"+ result.getInt("sender_id") + "</p>");
+					out.print("<p> Timestamp : "+ result.getDate("date_sent") + " " +result.getTime("time_set") +"</p>");
+					out.print("<p> Author : "+ result.getTime("") + "</p>");
+					out.print("<p> Subject : "+ result.getString("subject") + "</p>");
+					out.print("<p> Content : "+ result.getString("content")+ "</p>");
+					
 		  		}while( result.next() != false);
 		  		
 		  	}
@@ -66,7 +65,7 @@
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  		out.print("There are no post in the system.");
+		  		out.print("Your imbox is empty!!!");
 		  	}
 	    	
 			//Close the connection.
@@ -74,64 +73,8 @@
 			
 		} catch (Exception e){
 			out.println("Exception: " + e);
-		}
+		}*/
 	%>
-		</div>
-		
-		<div id="activeUsers">
-		<h4>Active Users</h4>
-	
-		
-		</div>
-		
-		<div id="newUsers">
-		<h4>New Users</h4>
-		<% 
-		try {
-			//Create a connection string
-			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
-	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-		    Class.forName("com.mysql.jdbc.Driver");
-	    
-	    	//Create a connection to your DB
-		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
-	
-		    String username = (String)session.getAttribute("username");
-		    
-	    	//Create a SQL statement
-		    Statement stmt = conn.createStatement();
-	    	
-	    	//check if usernsme or email exists
-		    String getPosts= "SELECT account_id,username FROM account  WHERE NOT(username = ?) AND Atype=?  GROUP BY account_id DESC LIMIT 0,9";
-		    PreparedStatement ps = conn.prepareStatement(getPosts);
-		    ps.setString(1,username);
-		    ps.setString(2,"user");
-		  	//Run the query against the DB
-		    ResultSet result = ps.executeQuery();
-		   
-		  	if( result.next() != false){
-		  		do{
-		  			out.print("<p>"+ result.getString("username") + "</p>");
-		  			
-		  		}while( result.next() != false);
-		  		
-		  	}
-		  	else{
-		  		
-		  	//Close the connection.
-			    conn.close(); 
-		  		out.print("There are no new users in the system.");
-		  	}
-	    	
-			//Close the connection.
-		    conn.close();
-			
-		} catch (Exception e){
-			out.println("Exception: " + e);
-		}
-	%>
-		
-		</div>
 	</div>
 	<div id="userAdvert">
 

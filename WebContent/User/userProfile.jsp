@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ page import="java.io.*,java.util.*,java.sql.*"%> 
+    
+   <%@ page import="java.io.*,java.util.*,java.sql.*"%> 
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -30,15 +32,11 @@
 	</div>
 	
 	<div id="userContent">
-		<div id="announcement">
-		<h4>Announcements</h4>
-		<p>New to this site! <a href="userGuide.html">Click here </a> to learn how to navigate through the site</p>
-		</div>
-		
-		<div id="hotTopics">
-		<h4>Hot Posts</h4>
+		<div id="profile">
+		<br><br><br>
 		<% 
 	try {
+			String accID="";
 			//Create a connection string
 			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
@@ -48,17 +46,22 @@
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
 	
 		    String username = (String)session.getAttribute("username");
-		    
+	    	
 	    	//check if usernsme or email exists
-		    String getPosts= "SELECT content, num_of_comments FROM post GROUP BY num_of_comments DESC LIMIT 0,9;";
+		    String getPosts= "SELECT account_id, email FROM account WHERE username =?";
 		    PreparedStatement ps = conn.prepareStatement(getPosts);
+		    ps.setString(1,username);
 		   
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
 		   
 		  	if( result.next() != false){
 				do{
-		  			
+					
+					accID=result.getString("account_id");
+					out.print("<p> Account # :\t\t"+ accID + "</p>");
+					out.print("<p> User Name :\t\t"+ username + "</p>");
+					out.print("<p> Email Address :\t"+ result.getString("email")+ "</p>");
 		  		}while( result.next() != false);
 		  		
 		  	}
@@ -66,53 +69,21 @@
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  		out.print("There are no post in the system.");
+			    out.print("There data in the system is inconsistent");
+			    return;
 		  	}
-	    	
-			//Close the connection.
-		    conn.close();
-			
-		} catch (Exception e){
-			out.println("Exception: " + e);
-		}
-	%>
-		</div>
-		
-		<div id="activeUsers">
-		<h4>Active Users</h4>
-	
-		
-		</div>
-		
-		<div id="newUsers">
-		<h4>New Users</h4>
-		<% 
-		try {
-			//Create a connection string
-			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
-	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-		    Class.forName("com.mysql.jdbc.Driver");
-	    
-	    	//Create a connection to your DB
-		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
-	
-		    String username = (String)session.getAttribute("username");
+		  	String getData= "SELECT * FROM userAccount WHERE user_id =?";
+		    ps = conn.prepareStatement(getData);
+		    ps.setString(1,accID);
 		    
-	    	//Create a SQL statement
-		    Statement stmt = conn.createStatement();
-	    	
-	    	//check if usernsme or email exists
-		    String getPosts= "SELECT account_id,username FROM account  WHERE NOT(username = ?) AND Atype=?  GROUP BY account_id DESC LIMIT 0,9";
-		    PreparedStatement ps = conn.prepareStatement(getPosts);
-		    ps.setString(1,username);
-		    ps.setString(2,"user");
-		  	//Run the query against the DB
-		    ResultSet result = ps.executeQuery();
-		   
+		    result = ps.executeQuery();
+			   
 		  	if( result.next() != false){
-		  		do{
-		  			out.print("<p>"+ result.getString("username") + "</p>");
-		  			
+				do{
+					
+					out.print("<p> User Rating :\t\t"+result.getString("rating") + "</p>");
+					out.print("<p> Number of Posts : "+result.getString("num_of_post") + "</p>");
+					out.print("<p> Number of Comments : "+result.getString("num_of_comments") + "</p>");
 		  		}while( result.next() != false);
 		  		
 		  	}
@@ -120,9 +91,10 @@
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  		out.print("There are no new users in the system.");
+		  		out.print("There data in the system is inconsistent");
 		  	}
-	    	
+		    
+		    
 			//Close the connection.
 		    conn.close();
 			
@@ -131,6 +103,11 @@
 		}
 	%>
 		
+		</div>
+		
+		<div id="edit button">
+		<br>
+		<button >Edit</button>
 		</div>
 	</div>
 	<div id="userAdvert">
