@@ -2,7 +2,6 @@ package model;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.util.LinkedList;
 
 public class Thread {
 	private int threadID;
@@ -14,7 +13,7 @@ public class Thread {
 	private Time threadTime;
 	
 	private Post question;
-	private LinkedList<Comment> comments;
+	
 
 	public Thread(int threadID, String topic, int authorID, int commentCount, 
 			Date threadDate, Time threadTime) {
@@ -25,7 +24,7 @@ public class Thread {
 		this.threadDate = threadDate;
 		this.threadTime = threadTime;
 	}
-
+	
 	public int getThreadID() {
 		return threadID;
 	}
@@ -82,13 +81,4 @@ public class Thread {
 		this.question = question;
 	}
 
-	public LinkedList<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(LinkedList<Comment> comments) {
-		this.comments = comments;
-	}
-
-	
 }

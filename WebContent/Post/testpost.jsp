@@ -41,7 +41,10 @@
 			</div>
 			<div class="question" id="questionBody">
 				this is the question body
-				<div class="threadEditing"><a href="editthread.jsp">Edit</a>   <a href="deletethread.jsp">Delete</a></div>
+				<div class="threadEditing">
+					<a href="editthread.jsp">Edit</a><a href="deletethread.jsp">Delete</a>
+					
+				</div>
 			</div>
 			
 			<div class="comment">

@@ -14,7 +14,9 @@ public class DataController {
 			pstmt.setString(1, username);
 			
 			ResultSet result = pstmt.executeQuery();
-			result.next();
+			if(!result.next()){
+				return -1;
+			}
 			
 			id = result.getInt("account_id");
 			

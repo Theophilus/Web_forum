@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="../Styles/threadstyles.css">
+<title>Ask a new question</title>
+</head>
+<body>
+	<div class="questionLabel" id="qlabel">
+		<p>Topic Description: </p>
+		<p>Search Words: </p>
+		<p><br>Type your question here: </p>
+	</div>
+	<div class="questionForm">
+		<form class="questiondata" method="post" action="/Web_forum/Thread/newquestion.jsp">
+			<p><input type="text" name="topic"></p>
+			<p><input type="text" name="searchwords"></p>
+			<p><br><textarea rows="10" cols="100" name="content"></textarea></p>
+			<p><input value="Submit" type="submit"><a href="../index.html"><button type="button">Cancel</button></a></p>	
+		</form>
+	</div>
+</body>
+</html>

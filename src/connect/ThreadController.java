@@ -9,38 +9,6 @@ import model.Post;
 import model.Thread;
 
 public class ThreadController {
-	public static Thread getThread(int threadID){
-		Thread thread = null;
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
-			
-			String selectThread = "SELECT * FROM thread WHERE thread_id = ?";
-			PreparedStatement pstmt = conn.prepareStatement(selectThread);
-			pstmt.setInt(1, threadID);
-			ResultSet results = pstmt.executeQuery();
-			results.next();
-			
-			String topic = results.getString("topic");
-			int authorID = results.getInt("author_id");
-			int postCount = results.getInt("num_of_posts");
-			Date threadDate = results.getDate("threaddate");
-			Time threadTime = results.getTime("threadtime");
-			
-			thread = new Thread(threadID, topic, authorID, postCount, threadDate, threadTime);
-			
-			Post question = getQuestion(threadID);
-			thread.setQuestion(question);
-			
-			LinkedList<Comment> comments = getComments(question.getPostID());
-			thread.setComments(comments);
-			
-			conn.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return thread;
-	}
 	
 	public static LinkedList<Comment> getComments(int postID){
 		LinkedList<Comment> comments = null;
@@ -78,20 +46,20 @@ public class ThreadController {
 		return comments;
 	}
 	
-	public static Post getQuestion(int threadID){
+	public static Post getQuestion(int postID){
 		Post post = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
 			
-			String getQuestion = "SELECT * FROM post WHERE tid = ?";
+			String getQuestion = "SELECT * FROM post WHERE post_id = ?";
 			PreparedStatement pstmt = conn.prepareStatement(getQuestion);
-			pstmt.setInt(1,  threadID);
+			pstmt.setInt(1,  postID);
 			ResultSet results = pstmt.executeQuery();
 			results.next();
 			
 			int authorID = results.getInt("author_id");
-			int postID = results.getInt("post_id");
+			int threadID = results.getInt("tid");
 			int upvotes = results.getInt("num_of_likes");
 			int downvotes = results.getInt("num_of_dislikes");
 			int commentCount = results.getInt("num_of_comments");
@@ -108,5 +76,53 @@ public class ThreadController {
 		}
 		
 		return post;
+	}
+	
+	public static int postQuestion(Post post, int userID){
+		int threadID = -1;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+			
+			PreparedStatement pstmt;
+			ResultSet rs;
+			
+			/*	misunderstanding
+			//	insert the thread
+			String insertThread = "INSERT INTO thread (topic, author_id, num_of_posts, threaddate, threadtime)"
+					+ "VALUES (?, ?, 0, CURDATE(), CURTIME())";
+			pstmt = conn.prepareStatement(insertThread);
+			pstmt.setString(1, post.getTopic());
+			pstmt.setInt(2, userID);
+			
+			pstmt.executeUpdate();
+			
+			//	get the thread id
+			String getTID = "SELECT LAST_INSERT_ID()";
+			Statement stmt = conn.createStatement();
+			rs = stmt.executeQuery(getTID);
+			rs.next();
+			
+			threadID = rs.getInt(1);
+			*/
+			
+			
+			//	insert the post
+			String insertPost = "INSERT INTO post (author_id, tid, date_created, topic, content, search_words, num_of_likes, num_of_dislikes, num_of_comments)"
+					+ "VALUES (?, ?, CURDATE(), ?, ?, ?, 0, 0, 0)";
+			pstmt = conn.prepareStatement(insertPost);
+			pstmt.setInt(1, userID);
+			pstmt.setInt(2, 1);
+			pstmt.setString(3, post.getTopic());
+			pstmt.setString(4, post.getContent());
+			pstmt.setString(5, post.getSearchWords());
+			
+			pstmt.executeUpdate();
+			
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return threadID;
 	}
 }

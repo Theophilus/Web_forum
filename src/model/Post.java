@@ -2,6 +2,7 @@ package model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.LinkedList;
 
 public class Post {
 	private int authorID;
@@ -20,6 +21,8 @@ public class Post {
 	private Date deletionDate;
 	private Time deletionTime;
 	
+	private LinkedList<Comment> comments;
+	
 	public Post(int authorID, int postID, int threadID, int upvotes,
 			int downvotes, int commentCount, String searchWords,
 			String content, String topic, Date creationDate) {
@@ -34,7 +37,29 @@ public class Post {
 		this.topic = topic;
 		this.creationDate = creationDate;
 	}
+	
+	public static Post newPost(int authorID, String topic, String searchWords, String content){
+		int threadID = -1;
+		int postID = -1;
+		int upvotes = 0;
+		int downvotes = 0;
+		int commentCount = 0;
+		Date creationDate = null;
+		
+		Post result = new Post(authorID, postID, threadID, upvotes, downvotes, 
+				commentCount, searchWords, content, topic, creationDate);
+		
+		return result;
+	}
 
+	public LinkedList<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(LinkedList<Comment> comments) {
+		this.comments = comments;
+	}
+	
 	public Time getEditTime() {
 		return editTime;
 	}
