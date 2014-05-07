@@ -97,9 +97,10 @@ table {
 	border-right:1px solid white;
 }
 
-#userMenu ul a:hover {
+#customerMenu ul li.selected a{
 	background-color:#ff3300;
 }
+
 	
 #userMenu ul li {
 	text-align: center; 
@@ -108,11 +109,11 @@ table {
 	display:inline;
 }
 
-#userMenu ul li a:active{
+#userMenu ul li.selected a{
 	background-color:#ff3300;
 }
 
-/* User styles */
+/* admin styles */
 
 #adminMenu{
 	float:left;
@@ -126,6 +127,20 @@ table {
 	height: 600px;
 }
 
+
+#customerMenu{
+	float:left;
+	width: 24%;
+	height: 600px;
+}
+#customerContent {
+
+	/*border-right:solid;*/
+	float:right;
+	width: 74%;
+	height: 600px;
+	
+}
 
 
 

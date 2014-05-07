@@ -30,8 +30,12 @@
 		</tr>
 		</table>
 		<br><br>
-		<a href="../index.html"><button type="button">Cancel</button></a> <INPUT value="SignUp" TYPE=SUBMIT>
+		<a href="../index.jsp"><button type="button">Cancel</button></a> <INPUT value="SignUp" TYPE=SUBMIT>
 		</FORM>
 		</div>
+		<div id="footer">
+		<p> &#169; webhackers</p>
+
+	</div>
 	</body>
 </html>

@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="../Styles/styles.css">
-<title>user</title>
+<title>Customer</title>
 </head>
 <body>
 	<div id="header">
@@ -16,54 +16,59 @@
 		<a href="../"><button class="logout" type="button">logout</button></a> 
 		
 	</div>
-	<div id="userMenu">
+	<div id="customerMenu">
 		<ul>
-		<li><a href="userHome.jsp">Home</a></li>
-		<li><a href="userProfile.jsp">Profile</a></li>
-		<li><a href="userMessages.jsp">Messages</a></li>
-		<li class="selected"><a href="userForum.jsp">Forum</a></li>
-		<li><a href="userAds.jsp">Adverts</a></li>
-		<li><a href="userSearch.jsp">Search</a></li>
-		<li><a href="userGuide.jsp">User Guide</a></li>
+		<li><a href="cusHome.jsp">Home</a></li>
+		<li><a href="cusProfile.jsp">Profile</a></li>
+		<li class="selected"><a href="cusOrders.jsp">Order History</a></li>
+		<li><a href="cusPlaceAd.jsp">Place Add</a></li>
 		</ul>
 		
 	</div>
 	
-	<div id="userContent">
-		
-			<% 
+	<div id="customerContent">
+	<h4>Order History</h4>
+		<% 
 	try {
 			//Create a connection string
 			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 		    Class.forName("com.mysql.jdbc.Driver");
-	    
+	    	int uid = (Integer) session.getAttribute("uid");
 	    	//Create a connection to your DB
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
-	
-		    String username = (String)session.getAttribute("username");
 		    
 	    	//check if usernsme or email exists
-		    String getPosts= "SELECT * FROM post GROUP BY num_of_likes LIMIT 0,20";
+		    String getPosts= "SELECT invoice_num,amount,duration FROM purchaseOrder WHERE cus_id=? LIMIT 0,9;";
+		    
 		    PreparedStatement ps = conn.prepareStatement(getPosts);
+		    ps.setInt(1,uid);
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
 		   
-		  	if( result.next() != false){
-				do{
-					out.print("<p> Topic : "+ result.getString("topic") + "</p>");
-					out.print("<p> Content : "+ result.getString("content")+ "</p>");
-					out.print("<p> Timestamp : "+ result.getDate("date_created") +"</p>");
-					out.print("<hr>");
+		  	if( result.next() != false){%>
+		  		<table>
+				<tr>
+				<td>Invoice Number</td>	
+				<td> Duration</td>
+				<td> Cost</td>
+				</tr>
+				<% do{
+					out.print("<tr>");
+					out.print("<td>"+ result.getString("invoice_num") + "</td>");
+					out.print("<td>"+ result.getString("num_months") + "</td>");
+					out.print("<td>"+ result.getString("amount") + "</td>");
+					out.print("</tr>");
 		  		}while( result.next() != false);
-		  		
+		  		%>
+		  		</table>
+		  		<% 
 		  	}
 		  	else{
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  	
-		  		out.print("<br><br><br>There are no posts to display!");
+		  		out.print("You have not yet placed an order!");
 		  	}
 	    	
 			//Close the connection.
@@ -73,11 +78,7 @@
 			out.println("Exception: " + e);
 		}
 	%>
-	</div>
-	<div id="userAdvert">
-
-
-	</div>
+	</div>	
 	<div id="footer">
 		<p> &#169; webhackers</p>
 

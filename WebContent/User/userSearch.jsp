@@ -22,9 +22,9 @@
 		<li><a href="userProfile.jsp">Profile</a></li>
 		<li><a href="userMessages.jsp">Messages</a></li>
 		<li><a href="userForum.jsp">Forum</a></li>
-		<li><a href="userAds.jsp">Adverts</a></li>
-		<li><a href="userSearch.jsp">Search</a></li>
-		<li><a href="userGuide.html">User Guide</a></li>
+		<li ><a href="userAds.jsp" >Adverts</a></li>
+		<li class="selected"><a href="userSearch.jsp">Search</a></li>
+		<li><a href="userGuide.jsp">User Guide</a></li>
 		</ul>
 		
 	</div>
@@ -58,45 +58,155 @@
 	    
 	    	//Create a connection to your DB
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
-	
+		    String uname = (String)session.getAttribute("username");
 		    String stype = (String)session.getAttribute("stype");
-		    String kword = (String) session.getAttribute("keyword");
-		    //out.print("keyword: "+kword);
-		    if(kword.equalsIgnoreCase("")){
+		    String kword = (String)session.getAttribute("keyword");
+		    //out.print("stype: "+ stype);
+		    if(kword.equalsIgnoreCase("") || stype.equalsIgnoreCase("") || stype == null || kword==null){
 		    	return;
 		    }
+		    
 		    String createSearch="";
 		    if(stype.equalsIgnoreCase("user")){
-		    	createSearch= "SELECT content, num_of_comments FROM post GROUP BY num_of_comments DESC LIMIT 0,9;";
+		    	ResultSet result;
+		    	if(kword.equalsIgnoreCase("ALL")){
+		    		createSearch= "SELECT username FROM account WHERE Atype =?";
+		    		PreparedStatement ps = conn.prepareStatement(createSearch);
+		    		ps.setString(1,"user");
+		    		result = ps.executeQuery();
+		    	}
+		    	else {
+		    		createSearch= "SELECT username FROM account WHERE Atype =? AND username LIKE ? ";
+		    		PreparedStatement ps = conn.prepareStatement(createSearch);
+			    	ps.setString(1,"user");
+			    	ps.setString(2,"%"+kword+"%");
+			    	//Run the query against the DB
+				    result = ps.executeQuery();
+		    	}
+		    	
+			   
+			  	if( result.next() != false){
+					do{
+						out.print("<p>"+ result.getString("username") + "</p>");
+			  		}while( result.next() != false);
+			  		
+			  	}
+			  	else{
+			  		
+			  	//Close the connection.
+				    conn.close(); 
+			  		out.print("no results found for search.");
+			  	}
 		    }
-		    if(stype.equalsIgnoreCase("ad")){
-		    	createSearch= "SELECT content, num_of_comments FROM post GROUP BY num_of_comments DESC LIMIT 0,9;";
+		    else if(stype.equalsIgnoreCase("ad")){
+		    	ResultSet result;
+				if(kword.equalsIgnoreCase("ALL")){
+					createSearch ="SELECT content, link_url FROM advertisement";
+					PreparedStatement ps = conn.prepareStatement(createSearch);
+					result = ps.executeQuery();
+		    	}
+		    	else {
+		    		createSearch ="SELECT content, link_url FROM advertisement WHERE content LIKE ? OR search_words =?";
+		    		PreparedStatement ps = conn.prepareStatement(createSearch);
+		    		ps.setString(1,"%"+kword+"%");
+		    		ps.setString(2,"%"+kword+"%");
+		    		//Run the query against the DB
+			    	 result = ps.executeQuery();
+		    	}
+		    	
+			  	if( result.next() != false){
+					do{
+						out.print("<p>" +result.getString("content")  +"</p>");
+						out.print("<a href="+ result.getString("link_url") + "\""+">" +"Click here to learn more</a>");
+						out.print("<hr>");
+			  		}while( result.next() != false);
+			  		
+			  	}
+			  	else{
+			  		
+			  	//Close the connection.
+				    conn.close(); 
+			  		out.print("no results found for search.");
+			  	}
 		    }
-		    if(stype.equalsIgnoreCase("messages")){
-		    	createSearch= "SELECT content, num_of_comments FROM post GROUP BY num_of_comments DESC LIMIT 0,9;";
+		    else if(stype.equalsIgnoreCase("messages")){
+		    	ResultSet result;
+				if(kword.equalsIgnoreCase("ALL")){
+					createSearch= "SELECT * FROM message,account";
+					PreparedStatement ps = conn.prepareStatement(createSearch);
+					result = ps.executeQuery();
+		    	}
+		    	else {
+		    		createSearch= "SELECT account_id FROM account WHERE username = ?";
+			    		PreparedStatement ps = conn.prepareStatement(createSearch);
+				    	ps.setString(1, uname);
+				    	result = ps.executeQuery();
+				    	result.next();
+				    	int uid=result.getInt("account_id");
+				    	
+		    		createSearch= "SELECT * FROM message,account A WHERE content LIKE ? OR subject =?"
+		    			+"AND (sender_id = ? OR receiver_id =?)";
+		    		ps = conn.prepareStatement(createSearch);
+			    	ps.setString(1,"%"+kword+"%");
+			    	ps.setString(2,"%"+kword+"%");
+			    	ps.setString(3, uname);
+			    	ps.setString(4, uname);
+			    	result = ps.executeQuery();
+		    	}
+		  
+			   
+			  	if( result.next() != false){
+					do{
+						out.print("<p> Sender :"+ result.getInt("sender_id") + "</p>");
+						out.print("<p> Date : "+ result.getDate("date_sent") + "</p>");
+						out.print("<p> Time : "+ result.getTime("time_set") + "</p>");
+						out.print("<p> Subject : "+ result.getString("subject") + "</p>");
+						out.print("<p> Content : "+ result.getString("content")+ "</p>");
+						out.print("<hr>");
+			  		}while( result.next() != false);
+			  		
+			  	}
+			  	else{
+			  		
+			  	//Close the connection.
+				    conn.close(); 
+			  		out.print("no results found for search.");
+			  	}
 		    }
-		    if(stype.equalsIgnoreCase("post")){
-		    	createSearch= "SELECT content, num_of_comments FROM post GROUP BY num_of_comments DESC LIMIT 0,9;";
+		    else if(stype.equalsIgnoreCase("post")){
+		    	ResultSet result ;
+				if(kword.equalsIgnoreCase("ALL")){
+					createSearch ="SELECT * FROM post";
+					PreparedStatement ps = conn.prepareStatement(createSearch);
+					result = ps.executeQuery();
+		    	}
+		    	else {
+		    		createSearch ="SELECT * FROM post WHERE content LIKE ? OR search_words =?"
+		    			+"OR topic = ?";
+		    		PreparedStatement ps = conn.prepareStatement(createSearch);
+			    	ps.setString(1,"%"+kword+"%");
+			    	ps.setString(2,"%"+kword+"%");
+			    	ps.setString(3,"%"+kword+"%");
+			    	result = ps.executeQuery();
+		    	}
+				
+			  	if( result.next() != false){
+					do{
+						out.print("<p> Topic : "+ result.getString("topic") + "</p>");
+						out.print("<p> Content : "+ result.getString("content")+ "</p>");
+						out.print("<p> Timestamp : "+ result.getDate("date_created") +"</p>");
+						out.print("<hr>");
+			  		}while( result.next() != false);
+			  		
+			  	}
+			  	else{
+			  		
+			  	//Close the connection.
+				    conn.close(); 
+			  		out.print("no results found for search.");
+			  	}
 		    }
 		    
-		    PreparedStatement ps = conn.prepareStatement(createSearch);
-		   
-		  	//Run the query against the DB
-		    ResultSet result = ps.executeQuery();
-		   
-		  	if( result.next() != false){
-				do{
-		  			
-		  		}while( result.next() != false);
-		  		
-		  	}
-		  	else{
-		  		
-		  	//Close the connection.
-			    conn.close(); 
-		  		out.print("no results found for search.");
-		  	}
-	    	
 			//Close the connection.
 		    conn.close();
 			

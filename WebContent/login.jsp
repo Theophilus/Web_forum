@@ -12,6 +12,7 @@
 <body>
 <% 
 	try {
+		//HttpSession session = request.getSession(true);request.getSession(true);
 			//Create a connection string
 			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
@@ -25,11 +26,27 @@
 		    String passwd = request.getParameter("password");
 		    
 		    //check for null values
+		    if( username ==" " || username == null){
+			  	//Close the connection.
+			  	
+				    conn.close();
+				    session.setAttribute( "error", "no user" );
+			  		response.sendRedirect("index.jsp");  
+			  	}
+		    if( passwd ==" " || passwd == null){
+			  	//Close the connection.
+			  	
+				    conn.close();
+				    session.setAttribute( "error", "no pass" );
+			  		response.sendRedirect("index.jsp");  
+			  	}
 		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
 			  	//Close the connection.
 				    conn.close();
-			  		response.sendRedirect("index.html");  
+				    session.setAttribute( "error", "no inputs" );
+			  		response.sendRedirect("index.jsp");  
 			  	}
+
 	    	//Create a SQL statement
 		    Statement stmt = conn.createStatement();
 	    	
@@ -45,6 +62,7 @@
 		  	//Close the connection.
 			    session.setAttribute( "username", username );
 			    session.setAttribute( "uid", result.getInt("account_id"));
+			    session.setAttribute( "stype","");
 		  		String userType=result.getString("Atype");
 		  		if(userType.equalsIgnoreCase("admin")){
 		  			conn.close();
@@ -56,7 +74,7 @@
 		  		}
 		  		if(userType.equalsIgnoreCase("customer")){
 		  			conn.close();
-		  			response.sendRedirect("Customer/customerHome.jsp");  
+		  			response.sendRedirect("Customer/cusHome.jsp");  
 		  		}
 		  		if(userType.equalsIgnoreCase("moderator")){
 		  			conn.close();
@@ -68,7 +86,7 @@
 		  		
 		  	//Close the connection.
 			    conn.close(); 
-		  		response.sendRedirect("index.html");
+		  		response.sendRedirect("index.jsp");
 		  	}
 	    	
 			//Close the connection.

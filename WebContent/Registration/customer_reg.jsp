@@ -14,24 +14,71 @@
 <%
 		try {
 			//Create a connection string
-			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/projtest";
+			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 		    Class.forName("com.mysql.jdbc.Driver");
 	    
 	    	//Create a connection to your DB
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
 		
+		    String regType= (String)session.getAttribute("regtype");
+		    String dest= (String) session.getAttribute("origin");
+		    int uid= (Integer) session.getAttribute("uid");
+			
 		  //Get parameters from the user registration page
 		    String username = request.getParameter("username");
 		    String passwd = request.getParameter("password");
 		    String email = request.getParameter("email");
+		    String company = request.getParameter("company");
+		    String fname = request.getParameter("fname");
+		    String lname = request.getParameter("lname");
+		    String addr = request.getParameter("address");
+		    String addr2= request.getParameter("address2");
+		    String city = request.getParameter("city");
+		    String state = request.getParameter("state");
+		    String zip = request.getParameter("zip");
+		    String tel = request.getParameter("phone");
 		    
+		    
+			if(regType.equalsIgnoreCase("update")){
+				String update = "UPDATE account SET username=?, email=?, password=? WHERE account_id=?";
+			    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
+				/*PreparedStatement ps = conn.prepareStatement(update);
+				
+			    //Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
+			    ps.setString(1, username);
+				ps.setString(2, email);
+				ps.setString(3, passwd);
+				ps.setInt(4, uid);
+				ps.executeUpdate();
+				session.setAttribute("regtype", "");
+				session.setAttribute("username", username);
+				session.setAttribute("regtype", "update");*/
+			}
+			else{
+		  
 	    	//Create a SQL statement
 		    Statement stmt = conn.createStatement();
-		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
+		    
+		    if( email ==" " || fname ==" " || email ==null || fname ==null){
 			  	//Close the connection.
 				    conn.close();
-			  		response.sendRedirect("index.html");  
+			  		response.sendRedirect("customer.jsp");  
+			  	}
+		    if( lname ==" " || addr ==" " || addr ==null || lname ==null){
+			  	//Close the connection.
+				    conn.close();
+			  		response.sendRedirect("customer.jsp");  
+			  	}
+		    if( city ==" " || state ==" " || city ==null || state == null){
+			  	//Close the connection.
+				    conn.close();
+			  		response.sendRedirect("customer.jsp");  
+			  	}
+		    if( username ==" " || passwd ==" " || username == null || passwd == null){
+			  	//Close the connection.
+				    conn.close();
+			  		response.sendRedirect("customer.jsp");  
 			  	}
 	    	//check if usernsme or email exists
 		    String userCheck= "SELECT username FROM account WHERE username = ?";
@@ -44,7 +91,7 @@
 		  	if(result.next() != false){
 		  		conn.close();
 		  		session.setAttribute("username", username);
-		  		response.sendRedirect("../Registration/user.html");
+		  		response.sendRedirect("customerRegError.jsp");
 		  		return;
 		  	}
 	    	
@@ -62,8 +109,8 @@
 		    userCount = userCount +1;
 		    
 		    //Make an insert statement for the Sells table:
-		    String insert = "INSERT INTO account(account_id, username, email, password, accountType)" +
-	                  "VALUES (?, ?, ?, ?,?)";
+		    String insert = "INSERT INTO account(account_id, username, email, password,Atype,Adate,Atime)" +
+	                  "VALUES (?, ?, ?, ?,?,CURDATE(),CURTIME())";
 		    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
 			ps = conn.prepareStatement(insert);
 			
@@ -76,10 +123,22 @@
 			
 			//Run the query against the DB
 			ps.executeUpdate();
-			
+			insert = "INSERT INTO customerAccount(customer_id, tel, company, Fname, Lname, address, num_of_ads)" +
+	                  "VALUES (?, ?, ?, ?,?,?,?)";
+			ps = conn.prepareStatement(insert);
+			ps.setInt(1, userCount);
+		    ps.setString(2, tel);
+			ps.setString(3, company);
+			ps.setString(4, fname);
+			ps.setString(5, lname);
+			ps.setString(6, addr+" "+addr2+","+city+","+state+" "+zip);
+			ps.setInt(7, 0);
+			ps.executeUpdate();
 			//Close the connection.
 		    conn.close();
-		    response.sendRedirect("../index.html");
+		    response.sendRedirect("../index.jsp");
+		    
+			}
 		} catch (Exception e){
 			out.println("Exception: " + e);
 		}

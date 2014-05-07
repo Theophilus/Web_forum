@@ -1,38 +1,33 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    
-   <%@ page import="java.io.*,java.util.*,java.sql.*"%> 
+     <%@ page import="java.io.*,java.util.*,java.sql.*"%> 
 <%@ page import="javax.servlet.http.*,javax.servlet.*" %>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="../Styles/styles.css">
-<title>user</title>
+<title>Customer</title>
 </head>
 <body>
 	<div id="header">
 		
 		<img class="head_img" src="../images/logo.png"/> 
-		<a href="../" ><button class="logout" type="button">logout</button></a> 
+		<a href="../"><button class="logout" type="button">logout</button></a> 
 		
 	</div>
-	<div id="userMenu">
+	<div id="customerMenu">
 		<ul>
-		<li><a href="userHome.jsp">Home</a></li>
-		<li class="selected"><a href="userProfile.jsp">Profile</a></li>
-		<li><a href="userMessages.jsp">Messages</a></li>
-		<li><a href="userForum.jsp">Forum</a></li>
-		<li><a href="userAds.jsp">Adverts</a></li>
-		<li><a href="userSearch.jsp">Search</a></li>
-		<li><a href="userGuide.jsp">User Guide</a></li>
+		<li><a href="cusHome.jsp">Home</a></li>
+		<li class="selected"><a href="cusProfile.jsp">Profile</a></li>
+		<li><a href="cusOrders.jsp">Order History</a></li>
+		<li><a href="cusPlaceAd.jsp">Place Add</a></li>
 		</ul>
 		
 	</div>
 	
-	<div id="userContent">
-		<div id="profile">
+	<div id="customerContent">
+	
 		<br><br><br>
 		<% 
 	try {
@@ -75,7 +70,7 @@
 			    out.print("There data in the system is inconsistent");
 			    return;
 		  	}
-		  	String getData= "SELECT * FROM userAccount WHERE user_id =?";
+		  	String getData= "SELECT * FROM customerAccount WHERE customer_id =?";
 		    ps = conn.prepareStatement(getData);
 		    ps.setString(1,accID);
 		    
@@ -83,9 +78,22 @@
 			   
 		  	if( result.next() != false){
 				do{
-					out.print("<p> User Rating :\t\t"+result.getString("rating") + "</p>");
-					out.print("<p> Number of Posts : "+result.getString("num_of_post") + "</p>");
-					out.print("<p> Number of Comments : "+result.getString("num_of_comments") + "</p>");
+					out.print("<p> Name :"+result.getString("Fname") +" "+result.getString("Lname")+ "</p>");
+					if(result.getString("tel") == null){
+						out.print("<p> Tel : "+"Not Provided" + "</p>");
+					}
+					else {
+						out.print("<p> Tel : "+result.getString("tel") + "</p>");
+					}
+					if(result.getString("company") == null){
+						out.print("<p> Company : "+"Not Provided" + "</p>");
+					}
+					else {
+						out.print("<p> Company : "+result.getString("company") + "</p>");
+					}
+					out.print("<p> Address : "+result.getString("address") + "</p>");
+					out.print("<p> Number of Ads : "+result.getString("num_of_ads") + "</p>");
+					//out.print("<br><br><a href="+"\""+"cusProfileEdit.jsp"+"\""+"><button>Edit</button></a>");
 		  		}while( result.next() != false);
 		  		
 		  	}
@@ -104,18 +112,9 @@
 			out.println("Exception: " + e);
 		}
 	%>
-		
+		<a href="cusProfileEdit.jsp"><button>Edit</button></a>
 		</div>
-		
-		<div id="edit button">
-		<br>
-		<a href="userProfileEdit.jsp"><button>Edit</button></a>
-		</div>
-	</div>
-	<div id="userAdvert">
-
-
-	</div>
+	
 	<div id="footer">
 		<p> &#169; webhackers</p>
 

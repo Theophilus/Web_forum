@@ -22,9 +22,9 @@
 		<li><a href="userProfile.jsp">Profile</a></li>
 		<li><a href="userMessages.jsp">Messages</a></li>
 		<li><a href="userForum.jsp">Forum</a></li>
-		<li><a href="userAds.jsp">Adverts</a></li>
+		<li class="selected"><a href="userAds.jsp">Adverts</a></li>
 		<li><a href="userSearch.jsp">Search</a></li>
-		<li><a href="userGuide.html">User Guide</a></li>
+		<li><a href="userGuide.jsp">User Guide</a></li>
 		</ul>
 		
 	</div>

@@ -13,6 +13,7 @@
 </head>
 <body>
 	<%
+		
 		try {
 			//Create a connection string
 			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
@@ -21,7 +22,7 @@
 	    
 	    	//Create a connection to your DB
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
-		
+	
 		  //Get parameters from the user registration page
 		    String username = request.getParameter("username");
 		    String passwd = request.getParameter("password");
@@ -30,6 +31,18 @@
 		  //Create a SQL statement
 		    Statement stmt = conn.createStatement();
 		  
+		    String regType= (String)session.getAttribute("regtype");
+		    String dest= (String) session.getAttribute("origin");
+		    int uid=0;
+		    if( session.getAttribute("uid") != null){
+		     uid= (Integer) session.getAttribute("uid");
+		    }
+			if(regType == null){
+				if( username == null || passwd == null|| email==null){
+				  	//Close the connection.
+					    conn.close();
+				  		response.sendRedirect("customer.html");  
+				  	}
 		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
 			  	//Close the connection.
 				    conn.close();
@@ -86,12 +99,28 @@
 			ps.setInt(4, 0);
 			ps.executeUpdate();
 			//Close the connection.
+			}
+			else if(regType.equalsIgnoreCase("update")){
+				String update = "UPDATE account SET username=?, email=?, password=? WHERE account_id=?";
+			    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
+				PreparedStatement ps = conn.prepareStatement(update);
+				
+			    //Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
+			    ps.setString(1, username);
+				ps.setString(2, email);
+				ps.setString(3, passwd);
+				ps.setInt(4, uid);
+				ps.executeUpdate();
+				session.setAttribute("regtype", "");
+				session.setAttribute("username", username);
+				session.setAttribute("regtype", "update");
+			}
+			
 		    conn.close();
-		    response.sendRedirect("../index.html");
+		    response.sendRedirect(""+dest);
 		} catch (Exception e){
 			out.println("Exception: " + e);
 		}
 	%>
-<p id="test"></p>
 </body>
 </html>

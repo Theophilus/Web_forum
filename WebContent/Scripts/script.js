@@ -1,3 +1,14 @@
+
+object.onchange=function computePrice(){
+	var x=document.getElementById("num");
+	var a=x.getAttribute("value");
+	var y=document.getElementById("mw");
+	var b=y.getAttribute("value");
+	document.getElementById("price").innerHTML = ""+(a*b);
+	alert("username "+user+ " already exits in system.");
+	
+};
+
 function userExits(user){
 	alert("username "+user+ " already exits in system.");
 	

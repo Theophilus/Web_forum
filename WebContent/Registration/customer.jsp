@@ -7,28 +7,32 @@
 		<title>Customer Registration</title>
 	</head>
 	<body>
+		<%
+		session.setAttribute("regtype", "new");
+		%>
 		<div id="container" >
-		<br><br><br><br>
+		<br><br>
+		<p style=color:red;> * fields are required </p>
 		<FORM METHOD=POST ACTION="customer_reg.jsp">
 		<table align="center">
 		<tr>
-		<td>Username:</td>			
+		<td>Username:*</td>			
 		<td><INPUT TYPE=TEXT NAME=username SIZE=40> </td>
 		</tr>
 		<tr>
-		<td>Password:</td>			
+		<td>Password:*</td>			
 		<td><INPUT TYPE=TEXT NAME=password SIZE=40></td>
 		</tr>
 		<tr>
-		<td>e-mail :</td>		
+		<td>e-mail :*</td>		
 		<td><INPUT TYPE=TEXT NAME=email SIZE=40></td>
 		</tr>
 		<tr>
-		<td>First Name:	</td>	
+		<td>First Name:*	</td>	
 		<td><INPUT TYPE=TEXT NAME=fname SIZE=40></td>
 		</tr>
 		<tr>
-		<td>Last Name:	</td>	
+		<td>Last Name:*	</td>	
 		<td><INPUT TYPE=TEXT NAME=lname SIZE=40></td>
 		</tr>
 		<tr>
@@ -36,7 +40,7 @@
 		<td><INPUT TYPE=TEXT NAME=company SIZE=40></td>
 		</tr>
 		<tr>
-		<td>Address:</td>			
+		<td>Address:*</td>			
 		<td><INPUT TYPE=TEXT NAME=address SIZE=40></td>
 		</tr>
 		<tr>
@@ -44,11 +48,15 @@
 		<td><INPUT TYPE=TEXT NAME=address2 SIZE=40></td>
 		</tr>
 		<tr>
-		<td>City:</td> <td><INPUT TYPE=TEXT NAME=city SIZE=20></td>
+		<td>City:*</td> <td><INPUT TYPE=TEXT NAME=city SIZE=20></td>
 		</tr>
 		<tr>
-		<td>State:</td> 
+		<td>State:*</td> 
 		<td><INPUT TYPE=TEXT NAME=state SIZE=15></td>
+		</tr>
+		<tr>
+		<td>Zip Code:*</td> 
+		<td><INPUT TYPE=TEXT NAME=zip SIZE=15></td>
 		</tr>
 		<tr>
 		<td>Telephone:</td>			
@@ -56,12 +64,15 @@
 		</tr>
 		</table>
 		<br>
-		<a href="../index.html"><button type="button">Cancel</button></a>
-		<INPUT TYPE=SUBMIT>
+		<a href="../index.jsp"><button type="button">Cancel</button></a>
+		<INPUT value="Sign Up" TYPE=SUBMIT>
 		
 		</FORM>
-		
-		<br><br><br>
+	
 		</div>
+		<div id="footer">
+		<p> &#169; webhackers</p>
+
+	</div>
 	</body>
 </html>
