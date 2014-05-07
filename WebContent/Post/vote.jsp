@@ -7,8 +7,7 @@
 <%@ page import="connect.*" %>
 <%@ page import="model.*" %>
 <%
-	int userID = DataController.getUserID((String)session.getAttribute("username"));
-	
+	int userID = (Integer)session.getAttribute("uid");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

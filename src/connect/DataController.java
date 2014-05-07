@@ -110,7 +110,7 @@ public class DataController {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
 			
-			String queryUser = "SELECT Atype FROM account WHERE userID = ?";
+			String queryUser = "SELECT Atype FROM account WHERE account_id = ?";
 			PreparedStatement pstmt = conn.prepareStatement(queryUser);
 			pstmt.setInt(1, userID);
 			ResultSet rs = pstmt.executeQuery();

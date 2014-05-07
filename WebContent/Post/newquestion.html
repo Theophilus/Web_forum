@@ -2,23 +2,49 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="../Styles/styles.css">
 <link rel="stylesheet" type="text/css" href="../Styles/threadstyles.css">
 <title>Ask a new question</title>
 </head>
 <body>
-	<div class="questionLabel" id="qlabel">
-		<p>Topic Description: </p>
-		<p>Search Words: </p>
-		<p><br>Type your question here: </p>
+	<div id="header">
+		<img class="head_img" src="../images/logo.png"/> 
+		<a href="../"><button class="logout" type="button">logout</button></a> 
 	</div>
-	<div class="questionForm">
-		<form class="questiondata" method="post" action="/Web_forum/Post/newquestion.jsp">
-			<p><input type="text" name="topic"></p>
-			<p><input type="text" name="searchwords"></p>
-			<p><br><textarea rows="10" cols="100" name="content"></textarea></p>
-			<br><input value="Submit" type="submit" style="float:left;">
-		</form>
-		<form action="../User/userHome.jsp"><input type="submit" value="Cancel" style="float:left"/></form>
+	<div id="userMenu">
+		<ul>
+		<li class="selected"><a href="userHome.jsp">Home</a></li>
+		<li><a href="../User/userProfile.jsp">Profile</a></li>
+		<li><a href="../User/userMessages.jsp">Messages</a></li>
+		<li><a href="../User/userForum.jsp">Forum</a></li>
+		<li><a href="../User/userAds.jsp">Adverts</a></li>
+		<li><a href="../User/userSearch.jsp">Search</a></li>
+		<li><a href="../User/userGuide.jsp">User Guide</a></li>
+		</ul>
+	</div>
+	<div id="userContent">
+		<div class="questionLabel" id="qlabel">
+			<p>Topic Description: </p>
+			<p>Search Words: </p>
+			<p><br>Type your question here: </p>
+		</div>
+		<div class="questionForm">
+			<form class="questiondata" method="post" action="/Web_forum/Post/newquestion.jsp">
+				<p><input type="text" name="topic"></p>
+				<p><input type="text" name="searchwords"></p>
+				<p><br><textarea rows="10" cols="100" name="content"></textarea></p>
+				<br><input value="Submit" type="submit" style="float:left;">
+			</form>
+			<form action="../User/userHome.jsp"><input type="submit" value="Cancel" style="float:left"/></form>
+		</div>
+	</div>
+	<div id="userAdvert">
+
+
+	</div>
+	<div id="footer">
+		<p> &#169; webhackers</p>
+
 	</div>
 </body>
 </html>

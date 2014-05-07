@@ -46,7 +46,19 @@ public class HeaderGenerator {
 	}
 	
 	public static String getCustomerHeader(){
-		String header = "";
+		String header = ""
+			+"<div id=\"header\">"
+				+"<img class=\"head_img\" src=\"../images/logo.png\"/>" 
+				+"<a  href=\"../\"><button class=\"logout\" type=\"button\">logout</button></a>" 
+			+"</div>"
+			+"<div id=\"customerMenu\">"
+				+"<ul>"
+				+"<li class=\"selected\"><a href=\"cusHome.jsp\">Home</a></li>"
+				+"<li><a href=\"cusProfile.jsp\">Profile</a></li>"
+				+"<li><a href=\"cusOrders.jsp\">Order History</a></li>"
+				+"<li><a href=\"cusPlaceAd.jsp\">Place Add</a></li>"
+				+"</ul>"
+			+"</div>";
 		return header;
 	}
 	

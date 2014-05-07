@@ -8,7 +8,7 @@
 <%@ page import="model.*" %>
 <%
 	int commentID = Integer.parseInt(request.getParameter("commentid"));
-	int userID = DataController.getUserID((String)session.getAttribute("username"));
+	int userID = (Integer)session.getAttribute("uid");
 	Comment oldComment = ThreadController.getComment(commentID);
 %>
 

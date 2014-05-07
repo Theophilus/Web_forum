@@ -9,17 +9,20 @@
 
 <%
 	Post currentPost = ThreadController.getQuestion(Integer.parseInt(request.getParameter("postid")));
-	int userID = DataController.getUserID((String)session.getAttribute("username"));
+	int userID = (Integer)session.getAttribute("uid");
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="../Styles/styles.css">
 <link rel="stylesheet" type="text/css" href="../Styles/threadstyles.css">
 <title>Edit post data</title>
 </head>
 <body>
+<%= HeaderGenerator.getHeader(DataController.getUserType(userID)) %>
+<div id="userContent">
 	<div class="questionLabel" id="qlabel">
 		<p>Topic Description: </p>
 		<p>Search Words: </p>
@@ -35,5 +38,7 @@
 		</form>
 		<form action="../Post/post.jsp?postid=<%= currentPost.getPostID() %>"><input type="submit" value="Cancel" style="float:left"/></form>
 	</div>
+</div>
+<%= HeaderGenerator.getFooter() %>
 </body>
 </html>
