@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public class Thread {
 	private int threadID;
 	private int authorID;
-	private int commentCount;
+	private int postCount;
 	
 	private String topic;
 	private Date threadDate;
@@ -17,14 +17,23 @@ public class Thread {
 	
 	private LinkedList<Post> posts;
 
-	public Thread(int threadID, String topic, int authorID, int commentCount, 
+	public Thread(int threadID, String topic, int authorID, int postCount, 
 			Date threadDate, Time threadTime) {
 		this.threadID = threadID;
 		this.authorID = authorID;
-		this.commentCount = commentCount;
+		this.postCount = postCount;
 		this.topic = topic;
 		this.threadDate = threadDate;
 		this.threadTime = threadTime;
+	}
+	
+	public static Thread simpleThread(int threadID, String topic, int postCount){
+		int authorID = -1;
+		Date threadDate = null;
+		Time threadTime = null;
+		
+		Thread thread = new Thread(threadID, topic, authorID, postCount, threadDate, threadTime);
+		return thread;
 	}
 	
 	public LinkedList<Post> getPosts(){
@@ -51,12 +60,12 @@ public class Thread {
 		this.authorID = authorID;
 	}
 
-	public int getCommentCount() {
-		return commentCount;
+	public int getPostCount() {
+		return postCount;
 	}
 
-	public void setCommentCount(int commentCount) {
-		this.commentCount = commentCount;
+	public void setPostCount(int postCount) {
+		this.postCount = postCount;
 	}
 
 	public String getTopic() {
