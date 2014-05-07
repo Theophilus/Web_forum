@@ -426,8 +426,6 @@ public class ThreadController {
 					pstmt.setString(3, "downvote");
 				}
 				pstmt.executeUpdate();
-				
-				System.out.println("executed pid="+itemID);
 			}
 			else if(type == Action.CVOTEUP || type == Action.CVOTEDOWN){
 				table = "comment";

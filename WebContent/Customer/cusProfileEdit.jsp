@@ -38,7 +38,7 @@
 		<table>
 		<tr>
 		<td>Username:*</td>			
-		<td><INPUT TYPE=TEXT NAME=username SIZE=40 value <%out.print(); %>> </td>
+		<td><INPUT TYPE=TEXT NAME=username SIZE=40 value=<%= out.print(session.getAttribute("username")) %>> </td>
 		</tr>
 		<tr>
 		<td>Password:*</td>			
