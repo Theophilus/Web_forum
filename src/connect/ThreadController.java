@@ -64,7 +64,7 @@ public class ThreadController {
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
 			
-			String selectComments = "SELECT * FROM post WHERE tid = ?";
+			String selectComments = "SELECT * FROM post WHERE tid = ? ORDER BY date_created, num_of_likes DESC";
 			PreparedStatement pstmt = conn.prepareStatement(selectComments);
 			pstmt.setInt(1, threadID);
 			
