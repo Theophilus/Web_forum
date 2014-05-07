@@ -21,6 +21,7 @@ public class ThreadController {
 			e.printStackTrace();
 		}
 	}
+	
 	public static LinkedList<Comment> getComments(int postID){
 		LinkedList<Comment> comments = null;
 		try{
@@ -55,6 +56,43 @@ public class ThreadController {
 			e.printStackTrace();
 		}
 		return comments;
+	}
+	
+	public static LinkedList<Post> getPosts(int threadID){
+		LinkedList<Post> posts = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+			
+			String selectComments = "SELECT * FROM post WHERE tid = ?";
+			PreparedStatement pstmt = conn.prepareStatement(selectComments);
+			pstmt.setInt(1, threadID);
+			
+			ResultSet results = pstmt.executeQuery();
+			
+			posts = new LinkedList<Post>();
+			Post currentPost = null;
+			while(results.next()){
+				int authorID = results.getInt("author_id");
+				int postID = results.getInt("post_id");
+				int tid = results.getInt("tid");
+				int upvotes = results.getInt("num_of_likes");
+				int downvotes = results.getInt("num_of_dislikes");
+				int commentCount = results.getInt("num_of_comments");
+				String searchWords = results.getString("search_words");
+				String content = results.getString("content");
+				String topic = results.getString("topic");
+				Date creationDate = results.getDate("date_created");
+				
+				currentPost = new Post(authorID, postID, tid, upvotes, downvotes, commentCount, searchWords, content, topic, creationDate);
+				posts.add(currentPost);
+			}
+			
+			conn.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return posts;
 	}
 	
 	public static Comment getComment(int commentID){
@@ -132,27 +170,6 @@ public class ThreadController {
 			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
 			
 			PreparedStatement pstmt;
-			//ResultSet rs;
-			
-			/*	misunderstanding
-			//	insert the thread
-			String insertThread = "INSERT INTO thread (topic, author_id, num_of_posts, threaddate, threadtime)"
-					+ "VALUES (?, ?, 0, CURDATE(), CURTIME())";
-			pstmt = conn.prepareStatement(insertThread);
-			pstmt.setString(1, post.getTopic());
-			pstmt.setInt(2, userID);
-			
-			pstmt.executeUpdate();
-			
-			//	get the thread id
-			String getTID = "SELECT LAST_INSERT_ID()";
-			Statement stmt = conn.createStatement();
-			rs = stmt.executeQuery(getTID);
-			rs.next();
-			
-			threadID = rs.getInt(1);
-			*/
-			
 			
 			//	insert the post
 			String insertPost = "INSERT INTO post (author_id, tid, date_created, topic, content, search_words, num_of_likes, num_of_dislikes, num_of_comments)"

@@ -20,25 +20,7 @@
 <title><%= currentPost.getTopic() %></title>
 </head>
 <body>
-<div id="header">
-		
-		<img class="head_img" src="../images/logo.png"/> 
-		<a href="../"><button class="logout" type="button">logout</button></a> 
-		
-	</div>
-	<div id="userMenu">
-		<ul>
-		<li><a href="#">Home</a></li>
-		<li><a href="#">Profile</a></li>
-		<li><a href="#">Messages</a></li>
-		<li><a href="#">Forum</a></li>
-		<li><a href="#">Adverts</a></li>
-		<li><a href="#">Search</a></li>
-		<li><a href="#">User Guide</a></li>
-		</ul>
-		
-	</div>
-	
+<%= HeaderGenerator.getHeader(DataController.getUserType(userID)) %>
 	<div id="userContent">
 		<div class="threadBody"><br>
 			<div class="threadTopic"><h1 class="topicLabel"><%= currentPost.getTopic() %></h1></div>
@@ -93,9 +75,6 @@
 
 
 	</div>
-	<div id="footer">
-		<p> &#169; webhackers</p>
-
-	</div>
+<%= HeaderGenerator.getFooter() %>
 </body>
 </html>
