@@ -25,6 +25,7 @@
 			    String link = request.getParameter("link");
 		    	String cont = request.getParameter("content");
 		    	String searchWords = request.getParameter("search");
+		    	String username= request.getParameter("username");
 		    
 	    		//Create a SQL statement
 		    	Statement stmt = conn.createStatement();
@@ -44,18 +45,23 @@
 	    	
 	    		//Create a new advertisement tuple with gathered information
 	    		PreparedStatement ps = null;
-	    		String name = (String) session.getAttribute("username");
-	    		rs=statement.executeQuery("SELECT * FROM students WHERE firstname='" + 
-	    			request.getParameter("searchStudent") + "'");
-	    		String customerID = "SELECT account_id FROM account WHERE ";
+	    		PreparedStatement psNew= null;
+	    		ResultSet rs =null;
+	    		int acctId =0;
+	    		psNew=conn.prepareStatement("SELECT account_id FROM account WHERE username=?");
+	    		psNew.setString(1,username);
 	    		
+	    		
+	    		rs = psNew.executeQuery();
+	    		acctId = rs.getInt(1);
+	    
 	    		String insert = "INSERT INTO advertisement(ad_id, link_url, po, cus_id, content, search_words, num_of_clicks)" +
 	    			"VALUES (?, ?, ?, ?, ?, ?, 0)";
 	    		ps = conn.prepareStatement(insert);
 				ps.setInt(1, adCount);
 			    ps.setString(2, link);
 				ps.setInt(3, adCount);
-				ps.setString(4, );
+				ps.setInt(4, acctId);
 				ps.setString(5, cont);
 				ps.setString(6, searchWords);
 			} catch (Exception e){
