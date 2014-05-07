@@ -29,9 +29,17 @@
 		session.setAttribute( "error", "ad error" );
 		response.sendRedirect("cusPlaceAd.jsp");
 	}
+	int block=0;
 	int number = Integer.parseInt(request.getParameter("number"));
-	int mw = Integer.parseInt(request.getParameter("weekmonth"));
-	session.setAttribute("newprice",(number*mw));
+	String mw = (String)request.getParameter("weekmonth");
+	if(mw.equalsIgnoreCase("Week")){
+		block = 50;
+	}
+	else{
+		block = 100;
+	}
+	int cost= number*block;
+	session.setAttribute("newprice",cost);
 	session.setAttribute("savedTopic",request.getParameter("topic"));
 	session.setAttribute("savedSW",""+request.getParameter("searchword"));
 	session.setAttribute("savedContent",""+request.getParameter("content"));

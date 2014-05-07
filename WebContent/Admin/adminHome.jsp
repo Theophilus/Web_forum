@@ -24,14 +24,9 @@
 	<div id="adminMenu">
 		<ul>
 		<li><a href="adminHome.jsp">Home</a></li>
-		<li><a href="adminProfile.jsp">Profile</a></li>
-		<li><a href="adminMessages.jsp">Messages</a></li>
-		<li><a href="adminForum.jsp">Forum</a></li>
 		<li><a href="adminSearch.jsp">Search</a></li>
-		<li><a href="createAdmin.html">Create Admin</a></li>
-		<li><a href="createMod.html">Create Moderator</a></li>
-		<li><a href="createCust.html">Create Customer</a></li>
-		<li><a href="createUsr.html">Create User</a></li>
+		<li><a href="createAdmin.jsp">Create Admin</a></li>
+		<li><a href="createMod.jsp">Create Moderator</a></li>
 		<li><a href="sales.jsp">Sales</a></li>
 		
 		</ul>
@@ -39,8 +34,64 @@
 	</div>
 	
 	<div id="adminContent">
-		<br>
-	<% out.println("The user of this page is: "+session.getAttribute("username")); %>
+		<% 
+		try {
+			//Create a connection string
+			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
+	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+		    Class.forName("com.mysql.jdbc.Driver");
+	    
+	    	//Create a connection to your DB
+		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
+	
+		    String username = (String)session.getAttribute("username");
+		    
+	    	//Create a SQL statement
+		    Statement stmt = conn.createStatement();
+	    	
+	    	//check if usernsme or email exists
+		    String getPosts= "SELECT * FROM account WHERE NOT (username =?) GROUP BY account_id DESC ";
+		    PreparedStatement ps = conn.prepareStatement(getPosts);
+		    ps.setString(1,username);
+		  	//Run the query against the DB
+		    ResultSet result = ps.executeQuery();
+		   
+		  	if( result.next() != false){%>
+		  		<table>
+				<tr>
+				<td><% out.print("<b>Account ID</b>");%></td>	
+				<td> <% out.print("<b>Username</b>");%></td>
+				<td> <% out.print("<b>Account Type</b>");%></td>
+				<td><% out.print("<b>Creation Date</b>");%> </td>
+				<td><% out.print("<b>Creation Time</b>");%></td>
+				</tr>
+				
+		  		<% do{
+		  			out.print("<tr>");
+		  			out.print("<td>"+ result.getString("account_id") + "\t"+"</td>");
+		  			out.print("<td>"+ result.getString("username") + "\t"+"</td>");
+		  			out.print( "<td>"+result.getString("Atype") + "\t"+"</td>");	
+		  			out.print("<td>"+ result.getString("Adate") + "\t"+"</td>");	
+		  			out.print("<td>"+ result.getString("Atime") + "\t"+"</td>");
+		  			out.print("</tr>");
+		  		}while( result.next() != false);%>
+		  		</table>
+		  	<% }
+		  	else{
+		  		
+		  	//Close the connection.
+			    conn.close(); 
+		  		out.print("There are no accounts in the system.");
+		  	}
+	    	
+			//Close the connection.
+		    conn.close();
+			
+		} catch (Exception e){
+			out.println("Exception: " + e);
+		}
+	%>
+		
 	</div>
 	
 	

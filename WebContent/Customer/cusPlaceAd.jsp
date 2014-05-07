@@ -71,9 +71,9 @@
   			<option value="11">11</option>
   			<option value="12">12</option>
 		</select>
-		<select id="wm" name="weekmonth" >
-  			<option value="1">Weeks</option>
-  			<option value="2">months</option>
+		<select name="weekmonth" >
+  			<option value="Week">Weeks</option>
+  			<option value="Month">months</option>
 		</select>
 		</td>
 		</tr>
@@ -81,7 +81,7 @@
 		<td>Content:*	</td>
 		</tr>
 		<tr>		
-		<td><textarea rows="10" cols="100" name="content"></textarea></td>
+		<td><textarea rows="10" cols="70" name="content"></textarea></td>
 		</tr>
 		
 		</table>

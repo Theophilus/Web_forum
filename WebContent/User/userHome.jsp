@@ -167,11 +167,54 @@
 			out.println("Exception: " + e);
 		}
 	%>
-		
+		</div>
 		</div>
 	</div>
 	<div id="userAdvert">
-
+		<% 
+	try {
+			//Create a connection string
+			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
+	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+		    Class.forName("com.mysql.jdbc.Driver");
+	    	int uid = (Integer) session.getAttribute("uid");
+	    	//Create a connection to your DB
+		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
+		    
+	    	//check if usernsme or email exists
+		    String getPosts= "SELECT * FROM advertisement LIMIT 0,6";
+		    
+		    PreparedStatement ps = conn.prepareStatement(getPosts);
+		  	//Run the query against the DB
+		    ResultSet result = ps.executeQuery();
+		   	int count =0;
+		  	if( result.next() != false){
+		  		
+				 do{
+					 if(count == 0){
+					out.print("<br>");
+					out.print("<p>" +result.getString("content")  +"</p>");
+					out.print("<a href="+ result.getString("link_url") + "\""+">" +"Click here to learn more</a>");
+					out.print("<br>");
+					out.print("<hr>");
+					 }
+		  		}while( result.next() != false);
+		  		 
+		  	}
+		  	else{
+		  		
+		  	//Close the connection.
+			    conn.close(); 
+		  		//out.print("You have not yet placed an order!");
+		  	}
+	    	
+			//Close the connection.
+		    conn.close();
+			
+		} catch (Exception e){
+			out.println("Exception: " + e);
+		}
+	%>
 
 	</div>
 	<div id="footer">

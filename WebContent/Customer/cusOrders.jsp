@@ -39,7 +39,7 @@
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
 		    
 	    	//check if usernsme or email exists
-		    String getPosts= "SELECT invoice_num,amount,duration FROM purchaseOrder WHERE cus_id=? LIMIT 0,9;";
+		    String getPosts= "SELECT * FROM purchaseOrder WHERE cus_id=?;";
 		    
 		    PreparedStatement ps = conn.prepareStatement(getPosts);
 		    ps.setInt(1,uid);
@@ -49,15 +49,19 @@
 		  	if( result.next() != false){%>
 		  		<table>
 				<tr>
-				<td>Invoice Number</td>	
-				<td> Duration</td>
-				<td> Cost</td>
+				<td><% out.print("<b>Invoice Number</b>");%></td>	
+				<td> <% out.print("<b>Duration</b>");%></td>
+				<td> <% out.print("<b>Cost</b>");%></td>
+				<td><% out.print("<b>Date</b>");%> </td>
+				<td><% out.print("<b>Time</b>");%></td>
 				</tr>
 				<% do{
 					out.print("<tr>");
 					out.print("<td>"+ result.getString("invoice_num") + "</td>");
-					out.print("<td>"+ result.getString("num_months") + "</td>");
+					out.print("<td>"+ result.getString("duration") + "</td>");
 					out.print("<td>"+ result.getString("amount") + "</td>");
+					out.print("<td>"+ result.getString("purchase_date") + "</td>");
+					out.print("<td>"+ result.getString("purchase_time") + "</td>");
 					out.print("</tr>");
 		  		}while( result.next() != false);
 		  		%>

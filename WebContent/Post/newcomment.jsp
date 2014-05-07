@@ -10,9 +10,30 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="../Styles/threadstyles.css">
+<link rel="stylesheet" type="text/css" href="../Styles/styles.css">
 <title>New Comment</title>
 </head>
 <body>
+	<div id="header">
+		
+		<img class="head_img" src="../images/logo.png"/> 
+		<a href="../"><button class="logout" type="button">logout</button></a> 
+		
+	</div>
+	<div id="userMenu">
+		<ul>
+		<li><a href="userHome.jsp">Home</a></li>
+		<li><a href="userProfile.jsp">Profile</a></li>
+		<li><a href="userMessages.jsp">Messages</a></li>
+		<li class="selected"><a href="userForum.jsp">Forum</a></li>
+		<li><a href="userAds.jsp">Adverts</a></li>
+		<li><a href="userSearch.jsp">Search</a></li>
+		<li><a href="userGuide.jsp">User Guide</a></li>
+		</ul>
+		
+	</div>
+
+	
 <div class="questionLabel" id="qlabel">
 		<p>Topic Description: </p>
 		<p><br>Type your comment here: </p>

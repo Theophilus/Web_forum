@@ -37,7 +37,23 @@
 		    if( session.getAttribute("uid") != null){
 		     uid= (Integer) session.getAttribute("uid");
 		    }
-			if(regType == null){
+
+			if(regType.equalsIgnoreCase("update")){
+				String update = "UPDATE account SET username=?, email=?, password=? WHERE account_id=?";
+			    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
+				PreparedStatement ps = conn.prepareStatement(update);
+				
+			    //Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
+			    ps.setString(1, username);
+				ps.setString(2, email);
+				ps.setString(3, passwd);
+				ps.setInt(4, uid);
+				ps.executeUpdate();
+				session.setAttribute("regtype", "");
+				session.setAttribute("username", username);
+				session.setAttribute("regtype", "update");
+			}
+			else{
 				if( username == null || passwd == null|| email==null){
 				  	//Close the connection.
 					    conn.close();
@@ -99,21 +115,6 @@
 			ps.setInt(4, 0);
 			ps.executeUpdate();
 			//Close the connection.
-			}
-			else if(regType.equalsIgnoreCase("update")){
-				String update = "UPDATE account SET username=?, email=?, password=? WHERE account_id=?";
-			    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
-				PreparedStatement ps = conn.prepareStatement(update);
-				
-			    //Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
-			    ps.setString(1, username);
-				ps.setString(2, email);
-				ps.setString(3, passwd);
-				ps.setInt(4, uid);
-				ps.executeUpdate();
-				session.setAttribute("regtype", "");
-				session.setAttribute("username", username);
-				session.setAttribute("regtype", "update");
 			}
 			
 		    conn.close();

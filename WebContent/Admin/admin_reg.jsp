@@ -13,37 +13,70 @@
 </head>
 <body>
 	<%
+		
 		try {
 			//Create a connection string
-			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/projtest";
+			String url = "jdbc:mysql://cs336-26.cs.rutgers.edu:3306/webforum";
 	    	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 		    Class.forName("com.mysql.jdbc.Driver");
 	    
 	    	//Create a connection to your DB
 		    Connection conn = DriverManager.getConnection(url, "csuser", "csc5cb45");
-		
+	
 		  //Get parameters from the user registration page
 		    String username = request.getParameter("username");
 		    String passwd = request.getParameter("password");
 		    String email = request.getParameter("email");
-		    
-	    	//Create a SQL statement
+		    String fname = request.getParameter("fname");
+		    String lname = request.getParameter("lname");
+		  //Create a SQL statement
 		    Statement stmt = conn.createStatement();
-	    	
+		  
+		    String regType= (String)session.getAttribute("regtype");
+		    String dest= (String) session.getAttribute("origin");
+		    int uid=0;
+		    if( session.getAttribute("uid") != null){
+		     uid= (Integer) session.getAttribute("uid");
+		    }
+
+			if(regType.equalsIgnoreCase("update")){
+				String update = "UPDATE account SET username=?, email=?, password=? WHERE account_id=?";
+			    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
+				PreparedStatement ps = conn.prepareStatement(update);
+				
+			    //Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
+			    ps.setString(1, username);
+				ps.setString(2, email);
+				ps.setString(3, passwd);
+				ps.setInt(4, uid);
+				ps.executeUpdate();
+				session.setAttribute("regtype", "");
+				session.setAttribute("username", username);
+				session.setAttribute("regtype", "update");
+			}
+			else{
+				if( username == null || passwd == null|| email==null){
+				  	//Close the connection.
+					    conn.close();
+				  		response.sendRedirect("customer.html");  
+				  	}
+		    if( username ==" " || passwd ==" " || username =="" || passwd ==""){
+			  	//Close the connection.
+				    conn.close();
+			  		response.sendRedirect("customer.html");  
+			  	}
+		    
 	    	//check if usernsme or email exists
 		    String userCheck= "SELECT username FROM account WHERE username = ?";
 		    PreparedStatement ps = conn.prepareStatement(userCheck);
 		    ps.setString(1,username);
 		  	//Run the query against the DB
 		    ResultSet result = ps.executeQuery();
-		    
-		    
 		  	if(result.next() != false){
-		  		conn.close(); %>
-		  		
-		  		
-		  		<% response.sendRedirect("../Registration/user.html");
-		  		return;
+		  		session.setAttribute("error", "usernameexits");
+		  		conn.close();
+		  		response.sendRedirect("createMod.jsp");
+		  		 return;
 		  	}
 	    	
 	    	//Populate SQL statement with for count of users.
@@ -60,8 +93,8 @@
 		    userCount = userCount +1;
 		    
 		    //Make an insert statement for the Sells table:
-		    String insert = "INSERT INTO account(account_id, username, email, password,accountType)" +
-	                  "VALUES (?, ?, ?, ?,?)";
+		    String insert = "INSERT INTO account(account_id, username, email, password,Atype,Adate,Atime)" +
+	                  "VALUES (?, ?, ?, ?,?,CURDATE(),CURTIME())";
 		    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
 			ps = conn.prepareStatement(insert);
 			
@@ -70,18 +103,25 @@
 		    ps.setString(2, username);
 			ps.setString(3, email);
 			ps.setString(4, passwd);
-			ps.setString(5, "user");
+			ps.setString(5, "admin");
 			
 			//Run the query against the DB
 			ps.executeUpdate();
-			
+			insert = "INSERT INTO adminAccount(admin_id, Fname,Lname)" +
+	                  "VALUES (?, ?, ?)";
+			ps = conn.prepareStatement(insert);
+			ps.setInt(1, userCount);
+		    ps.setString(2, fname);
+			ps.setString(3, lname);
+			ps.executeUpdate();
 			//Close the connection.
+			}
+			
 		    conn.close();
-		    response.sendRedirect("createAdmin.html");
+		    response.sendRedirect("adminHome.jsp");
 		} catch (Exception e){
 			out.println("Exception: " + e);
 		}
 	%>
-<p id="test"></p>
 </body>
 </html>

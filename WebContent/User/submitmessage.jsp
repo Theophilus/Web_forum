@@ -31,10 +31,10 @@
 			int recID = DataController.getUserID(recipient);
 			Message message = Message.newMessage(userID, recID, subject, content);
 			MessageController.newMessage(message);
-			response.sendRedirect("../Message/messagecenter.jsp");
+			response.sendRedirect("userMessages.jsp");
 		}
 		else{
-			response.sendRedirect("../Message/newmessage.html");
+			response.sendRedirect("newmessage.html");
 		}
 	%>
 </body>

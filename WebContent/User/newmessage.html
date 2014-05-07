@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="../Styles/styles.css">
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="header">
+		
+		<img class="head_img" src="../images/logo.png"/> 
+		<a href="../"><button class="logout" type="button">logout</button></a> 
+		
+	</div>
+	<div id="userMenu">
+		<ul>
+		<li><a href="userHome.jsp">Home</a></li>
+		<li><a href="userProfile.jsp">Profile</a></li>
+		<li class="selected"><a href="userMessages.jsp">Messages</a></li>
+		<li><a href="userForum.jsp">Forum</a></li>
+		<li><a href="userAds.jsp">Adverts</a></li>
+		<li><a href="userSearch.jsp">Search</a></li>
+		<li><a href="userGuide.jsp">User Guide</a></li>
+		</ul>
+		
+	</div>
+	<div class="messageForm">
+		<div class="messageFormLabels" style="float:left; margin-right:25px;">
+			<p>To: </p>
+			<p>Subject: </p>
+			<p><br>Message: </p>
+		</div>
+		<div class="messageFormFields" style="float:left;">
+			<form class="messageForm" method="post" action="submitmessage.jsp">
+				<p><input type="text" name="recipient"></p>
+				<p><input type="text" name="subject"></p>
+				<p><br><textarea rows="5" cols="100" name="content"></textarea></p>
+				<br><input value="Submit" type="submit" style="float:left;">
+			</form>
+			<form action="userMessages.jsp"><input type="submit" value="Cancel" style="float:left"/></form>
+		</div>
+	</div>
+</body>
+</html>

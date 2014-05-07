@@ -43,7 +43,7 @@
 		    
 		    
 		    //Make an insert statement for the Sells table:
-		    String insert = "INSERT INTO purchaseOrder(invoice_num, cus_id, amount, duration,Adate,Atime)" +
+		    String insert = "INSERT INTO purchaseOrder(invoice_num, cus_id, amount, duration,purchase_date,purchase_time)" +
 	                  "VALUES (?, ?, ?, ?,CURDATE(),CURTIME())";
 		    //Create a Prepared SQL statement allowing you to introduce the parameters of the query
 			PreparedStatement ps = conn.prepareStatement(insert);
@@ -51,20 +51,21 @@
 		    //Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
 			ps.setInt(1, invoice);
 		    ps.setInt(2, uid);
-			ps.setFloat(3,(Float) session.getAttribute("newprice"));
+			ps.setFloat(3,Float.parseFloat((String)session.getAttribute("newprice")));
 			ps.setString(4,(String) session.getAttribute("savednum") +" "+session.getAttribute("savedwm"));
 			
 			//Run the query against the DB
 			ps.executeUpdate();
 			
-			insert = "INSERT INTO Adverticement(link_url,po, cus_id,content,serach_words, num_of_clicks)" +
+			insert = "INSERT INTO advertisement(link_url,po, cus_id,content,search_words, num_of_clicks)" +
 	                  "VALUES (?, ?, ?, ?,?,?)";
 			ps = conn.prepareStatement(insert);
 			ps.setString(1,(String) session.getAttribute("savedUrl") );
 		    ps.setInt(2, invoice);
-			ps.setString(3, (String) session.getAttribute("savedContent"));
-			ps.setString(4, (String) session.getAttribute("savedSW"));
-			ps.setInt(2, 0);
+		    ps.setInt(3, uid);
+			ps.setString(4, (String) session.getAttribute("savedContent"));
+			ps.setString(5, (String) session.getAttribute("savedSW"));
+			ps.setInt(6, 0);
 			ps.executeUpdate();
 			//Close the connection.
 			

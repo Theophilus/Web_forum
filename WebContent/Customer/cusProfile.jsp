@@ -112,7 +112,7 @@
 			out.println("Exception: " + e);
 		}
 	%>
-		<a href="cusProfileEdit.jsp"><button>Edit</button></a>
+		<!--  <a href="cusProfileEdit.jsp"><button>Edit</button></a>-->
 		</div>
 	
 	<div id="footer">

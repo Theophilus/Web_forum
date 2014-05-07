@@ -25,12 +25,12 @@
 	<div id="customerContent">
 	<%
 		
-		out.print("Topic: "+session.getAttribute("savedTopic"));
-		out.print("Search words: "+session.getAttribute("savedSW"));
-		out.print("Url: "+session.getAttribute("savedUrl"));
-		out.print("Duration: "+session.getAttribute("savednum")+" "+session.getAttribute("savedwm"));
-		out.print("Price: "+session.getAttribute("newPrice"));
-		out.print("Content: "+session.getAttribute("savedContent"));
+		out.print("<br><br>"+"Topic: "+session.getAttribute("savedTopic")+"<br><br>");
+		out.print("Search words: "+session.getAttribute("savedSW")+"<br><br>");
+		out.print("Url: "+session.getAttribute("savedUrl")+"<br><br>");
+		out.print("Duration: "+session.getAttribute("savednum")+" "+session.getAttribute("savedwm")+"<br><br>");
+		out.print("Price: $"+session.getAttribute("newprice")+"<br><br>");
+		out.print("Content: "+session.getAttribute("savedContent")+"<br><br>");
 		out.print("<br><br><a href="+"\""+"place_ad.jsp"+"\">"+"<button>confirm and buy</button></a>");
 		
 	%>

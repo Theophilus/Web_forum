@@ -19,6 +19,7 @@
 <title>Message Center</title>
 </head>
 <body>
+
 <%= HeaderGenerator.getHeader(DataController.getUserType(userID)) %>
 <div id="userContent">
 	<div class="threadBody">
