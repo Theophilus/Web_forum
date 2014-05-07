@@ -8,6 +8,7 @@ import model.Comment;
 import model.Post;
 
 public class ThreadController {
+	//	TODO update edits table for any edit
 	Connection conn;
 	
 	private static int tempThreadID = 1;
@@ -54,6 +55,39 @@ public class ThreadController {
 			e.printStackTrace();
 		}
 		return comments;
+	}
+	
+	public static Comment getComment(int commentID){
+		Comment comment = null;
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+			
+			String getQuestion = "SELECT * FROM comment WHERE comment_id = ?";
+			PreparedStatement pstmt = conn.prepareStatement(getQuestion);
+			pstmt.setInt(1,  commentID);
+			ResultSet rs = pstmt.executeQuery();
+			if(!rs.next()){
+				System.err.println("Result set empty for getComment!");
+				return null;
+			}else{
+				int comment_id = rs.getInt("comment_id");
+				int author_id = rs.getInt("author_id");
+				int pid = rs.getInt("pid");
+				Date date_created = rs.getDate("date_created");
+				String topic = rs.getString("topic");
+				String content = rs.getString("content");
+				int num_of_upvote = rs.getInt("num_of_upvote");
+				int num_of_downvote = rs.getInt("num_of_downvote");
+				
+				comment = new Comment(comment_id, author_id, pid, date_created, topic, content, num_of_upvote, num_of_downvote);
+			}
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return comment;
 	}
 	
 	public static Post getQuestion(int postID){
@@ -178,6 +212,7 @@ public class ThreadController {
 			result = true;
 		}catch(SQLException e){
 			if(conn != null){
+				result = false;
 				System.err.println("Rolling back transaction.");
 				conn.rollback();
 			}
@@ -233,6 +268,190 @@ public class ThreadController {
 		}finally{
 			conn.setAutoCommit(true);
 			conn.close();
+		}
+		return result;
+	}
+	
+	public static boolean postComment(Comment comment){
+		boolean result = false;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+			
+			String insertComment = "INSERT INTO comment (author_id, pid, date_created, topic, content, num_of_upvote, num_of_downvote)"
+					+ "	VALUES (?, ?, CURDATE(), ?, ?, 0, 0)";
+			PreparedStatement pstmt = conn.prepareStatement(insertComment);
+			pstmt.setInt(1, comment.getAuthorID());
+			pstmt.setInt(2, comment.getPid());
+			pstmt.setString(3, comment.getTopic());
+			pstmt.setString(4, comment.getContent());
+			
+			pstmt.executeUpdate();
+			
+			String updateCounter = "UPDATE post SET num_of_comments = num_of_comments+1 WHERE post_id = ?";
+			pstmt = conn.prepareStatement(updateCounter);
+			pstmt.setInt(1, comment.getPid());
+			
+			pstmt.executeUpdate();
+			
+			conn.close();
+			result = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public boolean editComment(Comment oldComment, Comment newComment, int editorID) throws SQLException{
+		boolean result = false;
+		try{
+			conn.setAutoCommit(false);
+			String insertEdit = "INSERT INTO editedComment (cid, editor_id, oldcontent, editdate, edittime)"
+					+ "VALUES (?, ?, ?, CURDATE(), CURTIME())";
+			PreparedStatement pstmt = conn.prepareStatement(insertEdit);
+			pstmt.setInt(1, oldComment.getCommentID());
+			pstmt.setInt(2, editorID);
+			pstmt.setString(3, oldComment.getContent());
+			
+			pstmt.executeUpdate();
+			
+			String updateComment = "UPDATE comment SET topic = ?, content = ? WHERE comment_id = ?";
+			pstmt = conn.prepareStatement(updateComment);
+			pstmt.setString(1, newComment.getTopic());
+			pstmt.setString(2, newComment.getContent());
+			pstmt.setInt(3, oldComment.getCommentID());
+
+			pstmt.executeUpdate();
+			
+			conn.commit();
+			result = true;
+		}catch(SQLException e){
+			result = false;
+			System.err.println("Rolling back transaction.");
+			conn.rollback();
+		}finally{
+			conn.setAutoCommit(true);
+			conn.close();
+		}
+		return result;
+	}
+	
+	public boolean deleteComment(Comment comment, int editorID) throws SQLException{
+		boolean result = false;
+		try{
+			conn.setAutoCommit(false);
+			
+			String insertDeletion = "INSERT INTO deletedComment (comment_id, author_id, pid, date_created, topic, content, num_of_upvote, num_of_downvote, editor_id, editdate, edittime)"
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), CURTIME())";
+			PreparedStatement pstmt = conn.prepareStatement(insertDeletion);
+			pstmt.setInt(1, comment.getCommentID());
+			pstmt.setInt(2, comment.getAuthorID());
+			pstmt.setInt(3, comment.getPid());
+			pstmt.setDate(4, comment.getDateCreated());
+			pstmt.setString(5, comment.getTopic());
+			pstmt.setString(6, comment.getContent());
+			pstmt.setInt(7, comment.getUpvotes());
+			pstmt.setInt(8, comment.getDownvotes());
+			pstmt.setInt(9, editorID);
+			
+			pstmt.executeUpdate();
+			
+			String deleteComment = "DELETE FROM comment WHERE comment_id = ?";
+			pstmt = conn.prepareStatement(deleteComment);
+			pstmt.setInt(1, comment.getCommentID());
+			
+			pstmt.executeUpdate();
+			
+			String updateCounter = "UPDATE post SET num_of_comments = num_of_comments-1 WHERE post_id = ?";
+			pstmt = conn.prepareStatement(updateCounter);
+			pstmt.setInt(1, comment.getPid());
+			
+			pstmt.executeUpdate();
+			
+			
+			conn.commit();
+		}catch(SQLException e){
+			result = false;
+			e.printStackTrace();
+			System.err.println("Rolling back transaction.");
+			conn.rollback();
+		}finally{
+			conn.setAutoCommit(true);
+			conn.close();
+		}
+		return result;
+	}
+	
+	public static boolean vote(int itemID, Action type, int voterID){
+		boolean result = false;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(Database.url, Database.username, Database.password);
+			PreparedStatement pstmt = null;
+			
+			String table = "";
+			String voteClass = "";
+			String column = "";
+			
+			if(type == Action.PVOTEUP || type == Action.PVOTEDOWN ){
+				table = "post";
+				column = "post_id";
+				
+				String insertVoteTable = "INSERT INTO postVote (voter_id, content_id, v_type, v_date, v_time) "
+						+ "VALUES (?, ?, ?, CURDATE(), CURTIME())";
+				pstmt = conn.prepareStatement(insertVoteTable);
+				pstmt.setInt(1, voterID);
+				pstmt.setInt(2, itemID);
+				if(type == Action.PVOTEUP){
+					pstmt.setString(3, "upvote");
+				}
+				else{
+					pstmt.setString(3, "downvote");
+				}
+				pstmt.executeUpdate();
+				
+				System.out.println("executed pid="+itemID);
+			}
+			else if(type == Action.CVOTEUP || type == Action.CVOTEDOWN){
+				table = "comment";
+				column = "comment_id";
+				
+				String insertVoteTable = "INSERT INTO commentVote (voter_id, content_id, v_type, v_date, v_time) "
+						+ "VALUES (?, ?, ?, CURDATE(), CURTIME())";
+				pstmt = conn.prepareStatement(insertVoteTable);
+				pstmt.setInt(1, voterID);
+				pstmt.setInt(2, itemID);
+				if(type == Action.CVOTEUP){
+					pstmt.setString(3, "upvote");
+				}
+				else{
+					pstmt.setString(3, "downvote");
+				}
+				pstmt.executeUpdate();
+			}
+			if(type == Action.PVOTEUP){
+				voteClass = "num_of_likes";
+			}
+			else if(type == Action.PVOTEDOWN){
+				voteClass = "num_of_dislikes";
+			}
+			else if(type == Action.CVOTEUP){
+				voteClass = "num_of_upvote";
+			}
+			else if(type == Action.CVOTEDOWN){
+				voteClass = "num_of_downvote";
+			}
+			
+			String insertVote = "UPDATE "+table+" SET "+voteClass+" = "+voteClass+"+1 WHERE "+column+" = "+itemID;
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(insertVote);
+			
+			
+			
+			conn.close();
+			result = true;
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		return result;
 	}

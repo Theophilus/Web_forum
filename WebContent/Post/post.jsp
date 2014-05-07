@@ -49,12 +49,15 @@
 					<img src="../images/kappa.png" width="50" height="50">
 				</div>
 			</div>
-			<div class="question" id="questionBody"><%= currentPost.getContent() %>
+			<div class="question" id="questionBody"><%= currentPost.getContent() %><br>
+				<div class="threadEditing">
+				<a href="../Post/vote.jsp?postid=<%= currentPost.getPostID() %>&action=pvup">Vote UP</a> <%= currentPost.getUpvotes() %> <a href="../Post/vote.jsp?postid=<%= currentPost.getPostID() %>&action=pvdown">Vote DOWN</a> <%= currentPost.getDownvotes() %> 
 				<%
-						if(userID == currentPost.getAuthorID() || DataController.isModerator(userID)){
- 							out.print("\n<div class=\"threadEditing\"><a href=\"editpost.jsp?postid="+currentPost.getPostID()+"\">Edit</a>   <a href=\"deletepost.jsp?postid="+currentPost.getPostID()+"\">Delete</a></div>");
+						if(DataController.isModerator(userID)){
+ 							out.print("<a href=\"editpost.jsp?postid="+currentPost.getPostID()+"\">Edit</a> <a href=\"deletepost.jsp?postid="+currentPost.getPostID()+"\">Delete</a>");
  						}
  				%>
+ 				</div>
 			</div>	
 			<%
 					ListIterator<Comment> iterator = currentPost.getComments().listIterator();
@@ -69,10 +72,17 @@
 						commenterUsername = DataController.getUsername(currentComment.getAuthorID());
 						commentTopic = currentComment.getTopic();
 						commentBody = currentComment.getContent();
-						commentText = "<div class=\"comment\"><b>"+commenterUsername+"</b> ["+commentTopic+"]: "+commentBody+"</div>";
-						if(userID == currentComment.getAuthorID() || DataController.isModerator(userID)){
-							commentText += "\n<div class=\"threadEditing\"><a href=\"editcomment.jsp?commentid="+currentComment.getCommentID()+"\">Edit</a>   <a href=\"deletecomment.jsp?commentid="+currentComment.getCommentID()+"\">Delete</a></div>";
+						commentText = "<div class=\"comment\"><b>"+commenterUsername+"</b> ["+commentTopic+"]: "+commentBody;
+						commentText += "<br><div class=\"threadEditing\">";
+						commentText += "<a href=\"../Post/vote.jsp?commentid="+currentComment.getCommentID()+"&action=cvup\">Vote UP</a> "+currentComment.getUpvotes()
+								+ " <a href=\"../Post/vote.jsp?commentid="+currentComment.getCommentID()+"&action=cvdown\">Vote DOWN</a> "+currentComment.getDownvotes();
+						if(DataController.isModerator(userID)){
+							commentText += "<a href=\"editcomment.jsp?commentid="+currentComment.getCommentID()+"\">Edit</a> <a href=\"deletecomment.jsp?commentid="+currentComment.getCommentID()+"\">Delete</a>";
 						}
+						else if(userID == currentComment.getAuthorID()){
+							commentText += "<a href=\"editcomment.jsp?commentid="+currentComment.getCommentID()+"\">Edit</a>";
+						}
+						commentText += "</div></div>";
 						out.print(commentText);
 					}
 			%>

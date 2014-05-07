@@ -24,6 +24,15 @@ public class Comment implements Comparable<Comment>{
 		this.upvotes = upvotes;
 		this.downvotes = downvotes;
 	}
+	
+	public static Comment newComment(int authorID, int postID, String topic, String content){
+		int commentID = -1;
+		Date date = null;
+		int upvotes = 0;
+		int downvotes = 0;
+		Comment comment = new Comment(commentID, authorID, postID, date, topic, content, upvotes, downvotes);
+		return comment;
+	}
 
 	public int getCommentID() {
 		return commentID;

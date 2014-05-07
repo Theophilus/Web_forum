@@ -17,7 +17,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="../Styles/threadstyles.css">
-<title>Edit thread data</title>
+<title>Edit post data</title>
 </head>
 <body>
 	<div class="questionLabel" id="qlabel">
@@ -30,8 +30,10 @@
 			<p><input type="text" name="topic" value="<%= currentPost.getTopic() %>"></p>
 			<p><input type="text" name="searchwords" value="<%= currentPost.getSearchWords() %>"></p>
 			<p><br><textarea rows="10" cols="100" name="content"><%= currentPost.getContent() %></textarea></p>
-			<p><input value="Submit" type="submit"><a href="../Post/post.jsp?postid=<%= currentPost.getPostID() %>"><button type="button">Cancel</button></a></p>	
+			<br><input value="Submit" type="submit" style="float:left;">
+			<% System.out.println(currentPost.getPostID()); %>
 		</form>
+		<form action="../Post/post.jsp?postid=<%= currentPost.getPostID() %>"><input type="submit" value="Cancel" style="float:left"/></form>
 	</div>
 </body>
 </html>
