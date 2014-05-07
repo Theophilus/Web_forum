@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="messageForm">
+		<div class="messageFormLabels" style="float:left; margin-right:25px;">
+			<p>To: </p>
+			<p>Subject: </p>
+			<p><br>Message: </p>
+		</div>
+		<div class="messageFormFields" style="float:left;">
+			<form class="messageForm" method="post" action="../Message/submitmessage.jsp">
+				<p><input type="text" name="recipient"></p>
+				<p><input type="text" name="subject"></p>
+				<p><br><textarea rows="5" cols="100" name="content"></textarea></p>
+				<br><input value="Submit" type="submit" style="float:left;">
+			</form>
+			<form action="../Message/messagecenter.jsp"><input type="submit" value="Cancel" style="float:left"/></form>
+		</div>
+	</div>
+</body>
+</html>
